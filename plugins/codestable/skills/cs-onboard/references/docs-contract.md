@@ -25,8 +25,10 @@
 
 ## 规则
 
-1. **文档与代码同 PR。** 改变已有行为的 PR 同时更新 `docs/spec/`。PR 描述写一行
-   `Spec impact: none | updated | drift`；`drift` 表示发现文档与代码不一致但不在本 PR 范围，需列出路径。
+1. **文档与代码同 PR。** 改变外部可观察行为的 PR 同时更新 `docs/spec/`；还没有覆盖该行为的 spec 时只为
+   本次改动的行为新建一篇，spec 随开发逐步长出。PR 描述写一行 `Spec impact: none | updated | drift`：
+   `none` 表示未改变外部可观察行为，`updated` 表示 spec 已在同一 PR 更新或新建，`drift` 表示发现文档与
+   代码不一致但不在本 PR 范围，需列出路径。测试、README 与 agent 用的 verify 说明不算 spec。
 2. **只写仍成立的结论。** 讨论过程、尝试记录和进度留在 PR 或 issue，不进 `docs/`。
 3. **冲突优先级：** owner 最新确认 > 当前代码与测试证据 > 可能过期的文档。发现不一致先报告，不静默用
    代码覆盖文档里记录的取舍。

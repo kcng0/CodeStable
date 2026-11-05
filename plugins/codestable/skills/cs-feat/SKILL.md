@@ -109,6 +109,7 @@ schema 或数据迁移、鉴权/权限判定、计费/金额计算、并发/锁/
 
 ## 收尾
 
-- 报告：做了什么、改动文件、验证结果、遗留事项；改变已有行为时附一行 `Spec impact: none | updated | drift`（updated = canonical 文档已在同一 diff 更新；drift = 发现文档与代码不一致但不在本次范围，列出路径）。
+- 改变外部可观察行为时，在同一 diff 更新 `docs/README.md` 登记的当前真相 spec；还没有覆盖该行为的 spec 时只为本次改动的行为新建一篇并更新 index，不补写无关能力。verify skill、测试与 README 不算 spec；项目没有文档契约时不新建。
+- 报告：做了什么、改动文件、验证结果、遗留事项；附一行 `Spec impact: none | updated | drift`（none = 未改变外部可观察行为，或项目未接入文档契约；updated = 当前真相 spec 已在同一 diff 更新或新建；drift = 发现文档与代码不一致但不在本次范围，列出路径）。
 - 需要跨会话继续、多人交接或用户要求留痕时写 `.codestable/work/feat-{slug}.md`；高风险本身不自动建 work。work 文档一律带类型前缀 feat- / issue- / refactor- / epic-，整理时按前缀分流去向，含目标 / 现场 / 边界 / 证据 / 验收 / 状态与未决六节。完成后先在最终报告列**毕业清单**——哪条结论进了哪个项目文档、沉了哪条 lesson，无可毕业内容则明说——然后才删除；目标位置不存在时给出建议落点请用户拍板，拍板前保留。用户要求留档则保留。
 - 属于某个 Epic 的子功能时：独立子功能 work 文档的 frontmatter 标 `epic: {epic-slug}`；日常进展和完成状态只更新 Epic work 游标中对应稳定 ID 的进度与证据指针。永久 Epic 文档在 `active` 期间保持冻结，不因日常进度或子功能 work 回链而修改；需要改变子项定义、依赖或验收时交 `cs-epic` 走边界重确认。

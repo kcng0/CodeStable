@@ -11,6 +11,9 @@
   into `cs-keep` ("task skill 的候选门槛"); task skills keep a short pointer and the authorization gate.
 - `cs-feat` / `cs-issue` prefer a project verification skill for real-entry checks; feat / issue / refactor
   closings add a `Spec impact` line; `cs-epic` closing checks registered Vision for candidates.
+- `cs-feat` / `cs-issue` update the registered current-truth spec in the same diff when behavior changes,
+  creating one for just the changed behavior when none covers it; verify notes, tests, and README do not
+  count as spec. The template's `Spec impact` values are defined.
 - `cs-onboard` sets `disable-model-invocation: true`.
 - Removed `cs-review` and the `cs-code-review` alias (7 skills ship). Task skills replace the review
   protocol with an `独立验收` section: the author self-verifies on the real path; independent-context

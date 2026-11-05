@@ -549,6 +549,17 @@ def test_team_knowledge_lives_in_agents_md_and_docs_not_codestable() -> None:
         closing = body[body.index("## 收尾"):]
         assert "Spec impact" in closing, skill_name
 
+    # 试点回归：没有 spec 时写 none、把 verify 说明当 spec 写 updated，两种口径都不允许。
+    for skill_name in ("cs-feat", "cs-issue"):
+        _, body = _read_skill(SKILLS / skill_name / "SKILL.md")
+        closing = body[body.index("## 收尾"):]
+        for anchor in (
+            "还没有覆盖该行为的 spec 时只为本次改动的行为新建一篇",
+            "verify skill、测试与 README 不算 spec",
+            "none = 未改变外部可观察行为",
+        ):
+            assert anchor in closing, (skill_name, anchor)
+
 
 def test_requirements_only_follow_an_explicit_canonical_owner() -> None:
     for skill_name in ("cs-feat", "cs-epic"):

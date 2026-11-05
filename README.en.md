@@ -134,7 +134,7 @@ docs/
 - `## 项目事实` holds the small set of project facts needed every session, capped at 25 entries; the host loads it with every session.
 - `docs/notes/` keeps one lesson per file, evolves it through observed / validated / retired, and deduplicates before writing.
 - `.codestable/work/` exists only for active cross-session work, multi-agent handoff, or an explicitly requested durable record.
-- The project's `docs/README.md` defines where team docs (Vision, current-truth spec, ADRs, permanent Epics, glossary) live and how they are maintained. Deliveries that change existing behavior add a `Spec impact: none | updated | drift` line.
+- The project's `docs/README.md` defines where team docs (Vision, current-truth spec, ADRs, permanent Epics, glossary) live and how they are maintained. A behavior change updates or creates the matching spec in the same diff, and the delivery adds a `Spec impact: none | updated | drift` line.
 
 CodeStable recognizes crystallization moments while working: it observes silently and shows at most one evidence-backed candidate at ordinary completion.
 

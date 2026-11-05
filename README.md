@@ -130,7 +130,7 @@ docs/
 - `## 项目事实` 保存每次会话都需要的少量项目事实，最多 25 条；宿主随会话加载，不依赖调用 skill。
 - `docs/notes/` 一条经验一个文件，按 observed / validated / retired 演化，并在写入前查重合并。
 - `.codestable/work/` 只服务活动中的跨会话任务、多人交接或明确要求的持久记录。
-- 团队文档（Vision、当前真相 spec、ADR、永久 Epic、术语）的位置与读写约定以 `docs/README.md` 为准；改变已有行为的交付附一行 `Spec impact: none | updated | drift`。
+- 团队文档（Vision、当前真相 spec、ADR、永久 Epic、术语）的位置与读写约定以 `docs/README.md` 为准；改变行为时同一 diff 更新或新建对应 spec，交付附一行 `Spec impact: none | updated | drift`。
 
 CodeStable 边做边识别晶化时刻：任务中静默观察，普通收尾最多给一条有证据的候选。
 
