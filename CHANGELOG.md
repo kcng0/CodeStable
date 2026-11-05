@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+- ThinkThinkSyn fork (ADR-009): `cs-onboard` can write a `docs/README.md` team documentation contract
+  and register doc homes under `## 文档归宿` in `attention.md`, only with owner approval; `cs-keep` adds
+  current-truth, conflict-priority, Vision, and ADR supersede rules.
+- Moved the strong-signal, candidate-filter, and narrow lesson-maintenance rules from the four task skills
+  into `cs-keep` ("task skill 的候选门槛"); task skills keep a short pointer and the authorization gate.
+- `cs-feat` / `cs-issue` prefer a project verification skill for real-entry checks; feat / issue / refactor
+  closings add a `Spec impact` line; `cs-epic` closing checks registered Vision for candidates.
+- `cs-onboard` and `cs-code-review` set `disable-model-invocation: true`.
+
 - Added complete Codex plugin publisher and interface metadata, with package checks that prevent
   future manifests from passing without the fields required by generic plugin validation.
 

@@ -218,6 +218,11 @@ skill 专属 context 与 helper 分别由 owning skill 的 `references/` 和 `sc
 skill 文件，也不依赖集中式 onboard runtime；worktree、branch 和 agent backend 策略由宿主
 或 owner 决定。
 
+团队文档层不属于基础骨架。项目还没有 `docs/README.md` 时，`cs-onboard` 经 owner 同意后按模板写入
+文档契约，并在 `attention.md` 的 `## 文档归宿` 登记 owner 确认的 Vision、当前真相 spec、ADR、永久 Epic
+与术语位置；目录在第一次写入时创建。`cs-keep` 按登记写入，只写仍成立的结论，冲突按 owner 最新确认 >
+当前代码与测试证据 > 可能过期的文档处理。
+
 ## v1 升级边界
 
 v2 不迁移或清理 v1 项目的历史目录。`.codestable/roadmap/`、`.codestable/features/`、

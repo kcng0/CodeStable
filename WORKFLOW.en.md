@@ -275,7 +275,7 @@ entry, goal package, `state.yaml`, per-iteration reports, or legacy runtime gate
 Skill-specific context and helpers belong to the owning skill's `references/` and `scripts/`.
 Project facts belong in the structure above, an on-demand permanent Epic home, or the project's existing
 docs and ADRs. A skill does not read sibling skill files or depend on a centralized onboard runtime.
-Worktree, branch, and agent backend policy remain host- or owner-controlled.
+Worktree, branch, and agent backend policy remain host- or owner-controlled The owner-approved team doc layer (`docs/README.md`, `## 文档归宿` in attention) is not part of the base skeleton.
 
 ## v1 Upgrade Boundary
 

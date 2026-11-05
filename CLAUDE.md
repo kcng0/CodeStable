@@ -16,6 +16,7 @@
 - 不同 skill 之间不要相互耦合；A skill 在非必须情况下不要读取或依赖 B skill 的内部文件。仅约束文件级依赖，按名称提及或路由到其他 skill 不受此限。
 - skill 是独立安装单元，运行时每个 skill 只能稳定看到自己包内文件；不要在 SKILL.md 中写 `B-skill/reference/xxx.md` 这类 sibling 引用。
 - v2 基础骨架只预建 `.codestable/attention.md`、`lessons/` 与 `work/`；永久 Epic 优先沿用项目既有 Epic/RFC/initiative 归宿，否则首次创建时才按需建立 `.codestable/epics/`，onboard 不预建空目录。
+- 团队文档层（`docs/README.md` 文档契约与 `attention.md` 的 `## 文档归宿`）不属于基础骨架，只在 owner 同意后由 `cs-onboard` 写入；模板在 `cs-onboard/references/docs-contract.md`。
 - v1 的 `.codestable/roadmap/`、`.codestable/features/`、`.codestable/issues/`、`.codestable/refactors/`、`.codestable/goals/`、`.codestable/compound/`、`.codestable/audits/`、`.codestable/brainstorms/` 与 `.codestable/feedback/` 只作只读历史知识源：四个 owning task skills（`cs-feat`、`cs-issue`、`cs-refactor`、`cs-epic`）按任务关键词覆盖全部九目录并引用命中路径；其他 skill 仅检索自身契约明确点名的历史源。不得继续生成、原地改写或批量迁移。
 - `.codestable/requirements/` 仅在 `.codestable/attention.md` 明确记录其为 canonical requirement 位置时才可维护；owner 首次指定时先写入 attention，未记录时按只读历史知识处理且不得默认创建。
 - skill 专属 context 和确定性 helper 分别放在 owning skill 的 `references/` 与 `scripts/`；跨 skill 通用规则应归宿主策略、项目事实或独立安装单元。

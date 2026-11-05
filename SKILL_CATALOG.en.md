@@ -8,7 +8,7 @@ skill files or a centralized onboard runtime.
 | Group | Skill | Responsibility |
 |---|---|---|
 | Navigation | `cs` | Clear actions dispatch in the same turn. Requests to discuss first converge in the current session and hand off in the same turn; advice only recommends; the overview writes no files |
-| Onboarding | `cs-onboard` | Create minimal project memory and explain a lossless v1 upgrade |
+| Onboarding | `cs-onboard` | Create minimal project memory; set up the team doc layer with owner approval; explain a lossless v1 upgrade; user-invoked only |
 | Feature | `cs-feat` | Implement new capability; scale design confirmation and independent review with risk |
 | Issue | `cs-issue` | Diagnose problems; once repair is authorized, fix with red-to-green evidence |
 | Refactor | `cs-refactor` | Change structure or performance under verifiable behavioral equivalence |

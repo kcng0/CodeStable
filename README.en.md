@@ -9,6 +9,8 @@
 <p><img src="https://img.shields.io/badge/status-beta-F59E0B?style=flat-square" alt="Status"/> <img src="https://img.shields.io/badge/cs--skills-8-6366F1?style=flat-square" alt="CodeStable Skills"/> <img src="https://img.shields.io/badge/license-MIT-10B981?style=flat-square" alt="License"/></p>
 </div>
 
+> **ThinkThinkSyn fork** of upstream [codestable/CodeStable](https://github.com/codestable/CodeStable) `19c796de`; copyright remains with the upstream authors. See [ADR-009](docs/adr/009-thinkthinksyn-team-doc-layer-fork.md) for the differences.
+
 CodeStable offers lightweight skill contracts for serious software. It does not orchestrate agent teams and does not create a second documentation system. Models act within boundaries, prove results, and return knowledge to existing homes.
 
 ## 30-Second Model
@@ -75,7 +77,7 @@ If the catalog misses the plugin entity, use `npx skills@latest add codestable/C
 
 ### Onboard a Project
 
-Run `/cs-onboard` from the repository root. It creates only the minimal project-memory skeleton and does not take over documentation, worktree, or branch policy.
+Run `/cs-onboard` from the repository root. It creates the minimal project-memory skeleton and, with owner approval, a `docs/README.md` doc contract; it does not take over existing docs, worktree, or branch policy.
 
 ### Start Working
 
@@ -84,7 +86,7 @@ When you are unsure which entry fits, call `/cs`; you can also call the owning s
 | Skill | Purpose |
 |---|---|
 | `cs` | Route explicit actions, in-session discussion, advice, and system overview |
-| `cs-onboard` | Create the minimal project-memory skeleton |
+| `cs-onboard` | Create the minimal project-memory skeleton; set up the team doc layer with owner approval |
 | `cs-feat` | Implement new capability or change existing behavior |
 | `cs-issue` | Diagnose problems; once repair is authorized, fix with red-to-green evidence |
 | `cs-refactor` | Change structure or performance under equivalence evidence |
@@ -128,6 +130,7 @@ The owning skill returns conclusions to one home; if none exists, it asks the ow
 - `attention.md` holds the small set of project facts needed every session, capped at 25 entries.
 - `lessons/` keeps one lesson per file, evolves it through observed / validated / retired, and deduplicates before writing.
 - `work/` exists only for active cross-session work, multi-agent handoff, or an explicitly requested durable record.
+- Team docs (Vision, current-truth spec, ADRs, permanent Epics, glossary) are registered under `## 文档归宿` in `attention.md`; the project's `docs/README.md` defines how they are read and written. Deliveries that change existing behavior add a `Spec impact: none | updated | drift` line.
 
 CodeStable recognizes crystallization moments while working: it observes silently and shows at most one evidence-backed candidate at ordinary completion.
 

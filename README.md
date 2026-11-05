@@ -9,6 +9,8 @@
 <p><img src="https://img.shields.io/badge/status-beta-F59E0B?style=flat-square" alt="Status"/> <img src="https://img.shields.io/badge/cs--skills-8-6366F1?style=flat-square" alt="CodeStable Skills"/> <img src="https://img.shields.io/badge/license-MIT-10B981?style=flat-square" alt="License"/></p>
 </div>
 
+> **ThinkThinkSyn fork**：基于上游 [codestable/CodeStable](https://github.com/codestable/CodeStable) `19c796de`，版权归上游作者。差异与理由见 [ADR-009](docs/adr/009-thinkthinksyn-team-doc-layer-fork.md)。
+
 CodeStable 是一组面向严肃软件开发的轻量 skill 契约：不编排 Agent 团队，也不为项目建立第二套文档系统。模型在明确边界内行动，用证据证明结果，并把知识放回项目已有归宿。
 
 ## 30 秒运行模型
@@ -71,7 +73,7 @@ npx skills@latest add codestable/CodeStable/plugins/codestable
 
 ### 接入项目
 
-在仓库根目录运行 `/cs-onboard`。它只创建最小项目记忆骨架，不接管项目文档结构、worktree 或 branch 策略。
+在仓库根目录运行 `/cs-onboard`。它只创建最小项目记忆骨架；项目还没有团队文档约定时，可在 owner 同意后写入 `docs/README.md` 文档契约。不接管已有文档结构、worktree 或 branch 策略。
 
 ### 开始工作
 
@@ -80,7 +82,7 @@ npx skills@latest add codestable/CodeStable/plugins/codestable
 | Skill | 用途 |
 |---|---|
 | `cs` | 路由明确行动、会话内讨论、咨询与体系导览 |
-| `cs-onboard` | 为仓库创建最小项目记忆骨架 |
+| `cs-onboard` | 为仓库创建最小项目记忆骨架；owner 同意后建立团队文档层 |
 | `cs-feat` | 实现新功能或改变既有行为 |
 | `cs-issue` | 诊断问题；获授权后用红到绿证据修复 |
 | `cs-refactor` | 在行为等价证据下调整结构或性能 |
@@ -124,6 +126,7 @@ CodeStable 给强模型写责任，不写逐步脚本。skill 只约束目标、
 - `attention.md` 保存每次会话都需要的少量项目事实，最多 25 条。
 - `lessons/` 一条经验一个文件，按 observed / validated / retired 演化，并在写入前查重合并。
 - `work/` 只服务活动中的跨会话任务、多人交接或明确要求的持久记录。
+- 团队文档（Vision、当前真相 spec、ADR、永久 Epic、术语）的位置登记在 `attention.md` 的 `## 文档归宿`，读写约定见项目 `docs/README.md`；改变已有行为的交付附一行 `Spec impact: none | updated | drift`。
 
 CodeStable 边做边识别晶化时刻：任务中静默观察，普通收尾最多给一条有证据的候选。
 
