@@ -330,13 +330,13 @@ def check_documented_commands(root: Path, findings: list[Finding]) -> None:
         ("README.md", "README.en.md"),
         findings,
         required=(
-            "codex plugin marketplace add codestable/CodeStable",
+            "codex plugin marketplace add kcng0/CodeStable",
             "codex plugin add codestable@codestable",
-            "/plugin marketplace add codestable/CodeStable",
+            "/plugin marketplace add kcng0/CodeStable",
             "/plugin install codestable@codestable",
         ),
         required_lines=(
-            "npx skills@latest add codestable/CodeStable/plugins/codestable",
+            "npx skills@latest add kcng0/CodeStable/plugins/codestable",
         ),
     )
     check_command_docs(
@@ -351,7 +351,7 @@ def check_documented_commands(root: Path, findings: list[Finding]) -> None:
             "npx skills@latest remove",
         ),
         required_lines=(
-            "npx skills@latest add codestable/CodeStable/plugins/codestable --skill '*' -g",
+            "npx skills@latest add kcng0/CodeStable/plugins/codestable --skill '*' -g",
         ),
     )
 

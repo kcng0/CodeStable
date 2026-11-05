@@ -11,6 +11,8 @@
 
 > **kcng0 fork** of upstream [codestable/CodeStable](https://github.com/codestable/CodeStable) `19c796de`; copyright remains with the upstream authors. See [ADR-009](docs/adr/009-team-knowledge-out-of-codestable-dir.md) for the differences.
 
+> Team install: the commands below install this fork; in cc-switch, add the repository `kcng0/CodeStable` (skills live in `plugins/codestable/skills/`).
+
 CodeStable offers lightweight skill contracts for serious software. It does not orchestrate agent teams and does not create a second documentation system. Models act within boundaries, prove results, and return knowledge to existing homes.
 
 ## 30-Second Model
@@ -56,24 +58,24 @@ Pure discussion, advice, and overview requests write no project files by default
 Codex plugin marketplace:
 
 ```bash
-codex plugin marketplace add codestable/CodeStable
+codex plugin marketplace add kcng0/CodeStable
 codex plugin add codestable@codestable
 ```
 
 Claude plugin marketplace:
 
 ```text
-/plugin marketplace add codestable/CodeStable
+/plugin marketplace add kcng0/CodeStable
 /plugin install codestable@codestable
 ```
 
 `skills` CLI (v1 users must first follow the [upgrade guide](./UPGRADE.en.md#upgrade-from-v104-to-v2) to remove the 24 retired entries, then install v2):
 
 ```bash
-npx skills@latest add codestable/CodeStable/plugins/codestable
+npx skills@latest add kcng0/CodeStable/plugins/codestable
 ```
 
-If the catalog misses the plugin entity, use `npx skills@latest add codestable/CodeStable/plugins/codestable --full-depth` as the deep-scan fallback.
+If the catalog misses the plugin entity, use `npx skills@latest add kcng0/CodeStable/plugins/codestable --full-depth` as the deep-scan fallback.
 
 ### Onboard a Project
 

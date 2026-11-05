@@ -11,6 +11,8 @@
 
 > **kcng0 fork**：基于上游 [codestable/CodeStable](https://github.com/codestable/CodeStable) `19c796de`，版权归上游作者。差异与理由见 [ADR-009](docs/adr/009-team-knowledge-out-of-codestable-dir.md)。
 
+> 团队安装：照下方命令装的就是本 fork；用 cc-switch 时添加仓库 `kcng0/CodeStable`，skill 位于 `plugins/codestable/skills/`。
+
 CodeStable 是一组面向严肃软件开发的轻量 skill 契约：不编排 Agent 团队，也不为项目建立第二套文档系统。模型在明确边界内行动，用证据证明结果，并把知识放回项目已有归宿。
 
 ## 30 秒运行模型
@@ -52,24 +54,24 @@ feat · issue · refactor · epic
 Codex plugin marketplace：
 
 ```bash
-codex plugin marketplace add codestable/CodeStable
+codex plugin marketplace add kcng0/CodeStable
 codex plugin add codestable@codestable
 ```
 
 Claude plugin marketplace：
 
 ```text
-/plugin marketplace add codestable/CodeStable
+/plugin marketplace add kcng0/CodeStable
 /plugin install codestable@codestable
 ```
 
 `skills` CLI（v1 用户须先按[升级指南](./UPGRADE.md#从-v104-升级到-v2)精确删除 24 个退役入口，再安装 v2）：
 
 ```bash
-npx skills@latest add codestable/CodeStable/plugins/codestable
+npx skills@latest add kcng0/CodeStable/plugins/codestable
 ```
 
-如果 marketplace catalog 没有发现插件实体，可改用 `npx skills@latest add codestable/CodeStable/plugins/codestable --full-depth` 深度扫描。
+如果 marketplace catalog 没有发现插件实体，可改用 `npx skills@latest add kcng0/CodeStable/plugins/codestable --full-depth` 深度扫描。
 
 ### 接入项目
 

@@ -208,9 +208,9 @@ def test_readme_is_a_compact_first_evaluator_entry() -> None:
 
     for text in (zh, en):
         for anchor in (
-            "codex plugin marketplace add codestable/CodeStable",
-            "/plugin marketplace add codestable/CodeStable",
-            "npx skills@latest add codestable/CodeStable/plugins/codestable",
+            "codex plugin marketplace add kcng0/CodeStable",
+            "/plugin marketplace add kcng0/CodeStable",
+            "npx skills@latest add kcng0/CodeStable/plugins/codestable",
             "/cs-onboard",
             "/cs",
             "## 项目事实",

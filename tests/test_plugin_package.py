@@ -105,11 +105,11 @@ def make_repo(tmp_path: Path) -> Path:
         (repo / readme).write_text(
             "\n".join(
                 [
-                    "codex plugin marketplace add codestable/CodeStable",
+                    "codex plugin marketplace add kcng0/CodeStable",
                     "codex plugin add codestable@codestable",
-                    "/plugin marketplace add codestable/CodeStable",
+                    "/plugin marketplace add kcng0/CodeStable",
                     "/plugin install codestable@codestable",
-                    "npx skills@latest add codestable/CodeStable/plugins/codestable",
+                    "npx skills@latest add kcng0/CodeStable/plugins/codestable",
                     "",
                 ]
             ),
@@ -124,7 +124,7 @@ def make_repo(tmp_path: Path) -> Path:
                     "/plugin marketplace update",
                     "/plugin update codestable@codestable",
                     "npx skills@latest remove cs-old -g -y",
-                    "npx skills@latest add codestable/CodeStable/plugins/codestable --skill '*' -g",
+                    "npx skills@latest add kcng0/CodeStable/plugins/codestable --skill '*' -g",
                     "",
                 ]
             ),

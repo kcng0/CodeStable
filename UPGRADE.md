@@ -29,7 +29,7 @@ Codex 当前没有单独的 `plugin update` 子命令。第一条命令刷新 ma
 同一 major 内升级，重新从 package root 完整安装：
 
 ```bash
-npx skills@latest add codestable/CodeStable/plugins/codestable --skill '*' -g
+npx skills@latest add kcng0/CodeStable/plugins/codestable --skill '*' -g
 ```
 
 项目级安装去掉 `-g`，并在对应项目中执行。不要改用裸 `update`；package-root `add` 才会按插件 manifest 发现完整 skill 集合。
@@ -48,7 +48,7 @@ npx skills@latest remove \
   cs-issue-report cs-note cs-refactor-ff cs-req cs-roadmap \
   cs-roadmap-impl-goal cs-roadmap-review \
   -g -y
-npx skills@latest add codestable/CodeStable/plugins/codestable --skill '*' -g
+npx skills@latest add kcng0/CodeStable/plugins/codestable --skill '*' -g
 ```
 
 这条删除命令按名称删除，不校验安装来源。它不会影响列表外的名称；如果你维护了同名自定义或第三方 skill，请先备份，并从命令中移除对应名称。

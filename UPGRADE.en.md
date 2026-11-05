@@ -29,7 +29,7 @@ Restart Claude Code after updating so the new plugin version is applied.
 For an upgrade within the same major, reinstall the complete package from its package root:
 
 ```bash
-npx skills@latest add codestable/CodeStable/plugins/codestable --skill '*' -g
+npx skills@latest add kcng0/CodeStable/plugins/codestable --skill '*' -g
 ```
 
 For a project-scoped installation, omit `-g` and run the command inside that project. Do not switch to bare `update`; package-root `add` is what discovers the complete skill set through the plugin manifest.
@@ -48,7 +48,7 @@ npx skills@latest remove \
   cs-issue-report cs-note cs-refactor-ff cs-req cs-roadmap \
   cs-roadmap-impl-goal cs-roadmap-review \
   -g -y
-npx skills@latest add codestable/CodeStable/plugins/codestable --skill '*' -g
+npx skills@latest add kcng0/CodeStable/plugins/codestable --skill '*' -g
 ```
 
 Removal is name-based and does not verify the installation source. Names outside this list are untouched. If you maintain a custom or third-party skill under one of these names, back it up and remove that name from the command first.
