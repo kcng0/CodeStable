@@ -27,9 +27,19 @@ argument-hint: "[要沉淀的内容]"
 2. **高频必读事实进入 `attention.md`**：全文保持 ≤25 条，保留存量分节；超限先合并再新增。
 3. **结构性决定进入 ADR**：必须同时满足难回退、缺少上下文会令人意外、源于真实取舍；沿用项目
    惯例位置，不用 lesson 复制决定。
-4. **其他稳定方法进入项目既有文档**；目标不存在时请 owner 选择，不发明目录。
+4. **其他稳定方法进入项目既有文档**（含当前真相）；`attention.md` 的 `## 文档归宿` 已登记位置时按登记
+   写入，目标不存在时请 owner 选择，不发明目录。
 5. 其余尚未被更强 owner 承接的可复用经验，进入
    `.codestable/lessons/YYYY-MM-DD-{slug}.md`，作为可纠偏、可删除的 staging。
+
+## 当前真相与决策
+
+- 写入 spec 等当前真相文档时只写合并后仍成立的结论；讨论过程、尝试与进度不进项目文档。
+- 文档与代码或用户说法冲突时按 `owner 最新确认 > 当前代码与测试证据 > 可能过期的文档` 判断；先报告
+  冲突与依据，不静默用代码覆盖文档中记录的取舍。
+- Vision 等目标内容只在 owner 确认后修改；实现结论会改变目标时只给候选。
+- 新建或取代 ADR 时写明被否决的方案；取代时新建条目并把旧条标为 `Superseded`，不改写旧条正文。
+  项目有 ADR 或 spec 索引时同一更新内同步索引。
 
 `.codestable/`、`attention.md` 或 `lessons/` 不存在时可按需创建，不要求先跑 cs-onboard。临时状态、
 本周计划或 git 已完整表达的事实不沉淀。`codestable-eval` 只标记未来上游候选；本轮不导出、不上传、
@@ -66,6 +76,27 @@ date: YYYY-MM-DD
 - `observed|validated -> retired` 只写反证/替代原因与指针。retired 条目上的新结论必须另建 observed
   lesson，不继承旧条目的 validated 身份。
 - 稳定 validated 命中不产生文件 churn。不得保存原始对话、逐次命中日志或无限 evidence history。
+
+## task skill 的候选门槛
+
+owning task skill 在任务中静默收集候选时按以下门槛；本节是这些规则的唯一 owner。
+
+强信号只包括：owner
+纠正实际改变方案/代码/术语/验证；可复现证据推翻根因；同一路径失败两次后更换假设；
+blocking/important finding 暴露未编码不变量；新 red -> green 捕获可复发失败；lesson 真实改变本次行为
+或被反证；重复 workaround；方法显著降低重试、成本或风险。
+
+候选还必须同时有可追溯证据、能写成未来动作、适用于本次精确 diff 之外、且没有现成 canonical
+owner。网络波动、拼写、泛化口号、活动记录，以及已被机械 owner 完整覆盖的事实直接丢弃。
+
+创建、改写规则/scope、晋升、删除与跨项目反馈仍须用户显式授权。为不中断 read-repair，仅对已有且
+有效命中的 lesson 开放两种窄维护：`observed -> validated` 仅在独立后续任务确实采用并验证成功时
+发生，只补一次代表性证据；必须记录 lesson 实际改变的计划或验证，或明确排除的具体且合理错误路径，
+以及本次通过的验收证据。`observed|validated -> retired` 仅在当前仓库事实直接反证或发现已有
+canonical owner 时发生，只写原因与替代/反证指针。窄维护不新建事实、不改规则、不扩 scope、不新增
+gate，随当次代码、证据和
+游标进入同一语义原子 milestone；稳定 validated 命中不写文件。需要改写结论或证据不足时只给
+候选，新结论不得通过复活 retired 条目获得 validated 身份；窄维护必须在最终报告列出文件变化。
 
 ## 写入纪律（硬门槛）
 

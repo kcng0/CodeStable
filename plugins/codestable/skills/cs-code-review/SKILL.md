@@ -2,6 +2,7 @@
 name: cs-code-review
 description: cs-review 的兼容别名（v1 沿用名）。触发后在当前 agent 中转到 cs-review，不维护独立规则或创建子 agent。
 argument-hint: "[--range <git-range>] [scope 或 audit 目标]"
+disable-model-invocation: true
 ---
 
 # cs-code-review → cs-review

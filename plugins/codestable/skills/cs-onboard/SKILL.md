@@ -1,6 +1,7 @@
 ---
 name: cs-onboard
-description: 仓库接入 CodeStable：创建最小骨架，或为 v1 存量项目做无损升级说明。
+description: 仓库接入 CodeStable：创建最小骨架，经 owner 同意后建立团队文档层，或为 v1 存量项目做无损升级说明。
+disable-model-invocation: true
 ---
 
 # cs-onboard
@@ -17,6 +18,18 @@ description: 仓库接入 CodeStable：创建最小骨架，或为 v1 存量项�
 ```
 
 创建后确认 `.codestable/` 未被 .gitignore 忽略（它必须入库共享）；发现被忽略时停下报告，由用户决定怎么改，不擅自修改 .gitignore。attention.md 初始只写一行标题和一句用途说明，不预置分节模板。`.codestable/epics/` 不属于基础骨架：首次 Epic 优先沿用项目已有 Epic / RFC / initiative 归宿，没有时才由 `cs-epic` 按需创建。
+
+## 团队文档层（owner 同意后）
+
+骨架之外，询问 owner 是否建立团队文档层；同意才做，不同意只建骨架。
+
+- 项目还没有 `docs/README.md` 时，按 `references/docs-contract.md` 中分隔线以下的模板写入，并把模板里的路径
+  改成项目已有的实际位置；已有文档契约时不覆盖，只报告差异。
+- 在 `attention.md` 写一节 `## 文档归宿`，逐行登记 owner 确认的 canonical 位置：Vision、当前真相 spec、
+  ADR（含索引）、永久 Epic、术语表。项目已有对应位置时沿用，不另造；owner 未确认的类型不写。
+- 不预建 `docs/spec/`、`docs/adr/`、`docs/epics/` 等空目录，首次写入时由 owning skill 创建。
+- 仓库已有 `AGENTS.md` 时，建议加一行指针：`项目高频事实见 .codestable/attention.md；文档契约见 docs/README.md`，
+  owner 同意才写；指针不替代 attention，也不把项目事实复制进 `AGENTS.md`。
 
 ## 硬门槛
 
@@ -36,4 +49,4 @@ description: 仓库接入 CodeStable：创建最小骨架，或为 v1 存量项�
 
 ## 收尾
 
-报告创建了哪些文件、保留了哪些存量、`.codestable/` 的 git 状态。不写入任何业务判断。
+报告创建了哪些文件、保留了哪些存量、登记了哪些文档归宿、`.codestable/` 的 git 状态。不写入任何业务判断。
