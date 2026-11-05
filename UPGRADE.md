@@ -36,13 +36,13 @@ npx skills@latest add kcng0/CodeStable/plugins/codestable --skill '*' -g
 
 ## 从 v1.0.4 升级到 v2
 
-v2 把 32 个入口收敛为 8 个主 skill，并只保留 `cs-code-review` 这一个兼容别名。
+本 fork 把 32 个入口收敛为 7 个 skill，不保留兼容别名。
 
-当前 `skills` CLI 的 `add` 不会自动删除新版 package 已移除的旧名称，因此首次升级前必须精确删除 24 个退役入口：
+当前 `skills` CLI 的 `add` 不会自动删除新版 package 已移除的旧名称，因此首次升级前必须精确删除 25 个退役入口：
 
 ```bash
 npx skills@latest remove \
-  cs-audit cs-brainstorm cs-doc-api cs-doc-tutorial cs-docs cs-docs-neat \
+  cs-audit cs-brainstorm cs-code-review cs-doc-api cs-doc-tutorial cs-docs cs-docs-neat \
   cs-domain cs-feat-accept cs-feat-design cs-feat-design-review cs-feat-ff \
   cs-feat-impl cs-feat-qa cs-feedback cs-goal cs-issue-analyze cs-issue-fix \
   cs-issue-report cs-note cs-refactor-ff cs-req cs-roadmap \
@@ -54,6 +54,8 @@ npx skills@latest add kcng0/CodeStable/plugins/codestable --skill '*' -g
 这条删除命令按名称删除，不校验安装来源。它不会影响列表外的名称；如果你维护了同名自定义或第三方 skill，请先备份，并从命令中移除对应名称。
 
 项目级 v1 安装同样去掉两条命令中的 `-g`，在项目目录执行。
+
+从上游 v2 切换到本 fork 时，另需删除 `cs-review` 与 `cs-code-review`：审查交给宿主或项目已有的 review 能力，独立验收由 task skill 按硬条件触发。
 
 ## 项目资产不会被迁移
 
@@ -67,7 +69,7 @@ npx skills@latest add kcng0/CodeStable/plugins/codestable --skill '*' -g
 
 - 调用 `/cs`，确认根入口可用。
 - 调用 `/cs-onboard` 时应只维护最小项目记忆，不覆盖已有项目文档。
-- 使用 `skills` CLI 时，确认 8 个主 skill 与 `cs-code-review` 兼容别名都已安装。
+- 使用 `skills` CLI 时，确认 7 个 skill 都已安装，且没有残留 `cs-review` / `cs-code-review`。
 - 遇到安装差异时先记录安装入口和版本，再到仓库 Issue 报告。
 
 返回 [README](./README.md)。

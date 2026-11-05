@@ -1,6 +1,6 @@
 # cs-epic 并行执行协议
 
-仅在 work 游标 `item_progression: parallel` 且批准 hash 有效时读取。本协议只改变已批准子项的调度与集成方式；三道 owner gate、审查协议、`milestone_commit` / `remote_publish` 语义、双层文档职责与暂停清单全部不变，并行不新增 owner gate。
+仅在 work 游标 `item_progression: parallel` 且批准 hash 有效时读取。本协议只改变已批准子项的调度与集成方式；owner gate、独立验收规则、`milestone_commit` / `remote_publish` 语义、双层文档职责与暂停清单全部不变，并行不新增 owner gate。
 
 ## 进入与退化
 
@@ -23,11 +23,11 @@
   - scopeOwnership：只拥有本子项；列出明确不得触碰的路径与契约；
   - boundaries：隔离工作区路径；不得写 work 游标或永久 Epic 文档；不得执行远端发布；不得认领或修改其他子项；
   - evidence：owning skill 要求的验证证据种类；
-  - returnContract：终态为 `completed`（证据 + 可集成交付指针 + 可选 `晶化候选：{rule}`）或 `blocked`（原因、已尝试路径与分类：`item-local` 指仅影响本子项的实现层阻塞；`epic-global` 指命中 SKILL.md 暂停清单的情形——契约或重大风险变化、新增权限、需要 owner 明确接受的 findings 等）。
-- worker 按子项类型执行其 owning skill（cs-feat / cs-issue / cs-refactor）的完整纪律。worker 是范围受限的编排者：仅被授权按其 owning skill 的审查协议创建 reviewer；reviewer 是叶子执行器，不得再创建子 agent；worker 不得派发其他执行 agent。
-- worker 创建沿用 SKILL.md reviewer 条款的能力发现顺序：受管理的结构化委派能力优先，其次宿主 subagent，最后本机有界 agent CLI，不得只扫 PATH；具体后端与 model 约束属于项目上下文，不写入本 skill。
-- worker 承担实现纪律，选择目标是质量而非独立性：显式选择当前会话可用的最强稳定 model，默认与主流程同构即可，不为 worker 追求异构，禁止依赖默认模型。推理强度与子项契约的风险和设计密度相称：纯机械性子项可降档，含设计取舍、跨模块影响或高失败代价的子项用最强档，拿不准时不降档。异构优先只适用于 worker 为自己创建的 reviewer——相对 worker 这个实现者异构。
-- 每个 worker 的创建方式、agent/model 与选择原因写入其 contextPacket 记录，与 reviewer task packet 同规。
+  - returnContract：终态为 `completed`（证据 + 可集成交付指针 + 可选 `晶化候选：{rule}`）或 `blocked`（原因、已尝试路径与分类：`item-local` 指仅影响本子项的实现层阻塞；`epic-global` 指命中 SKILL.md 暂停清单的情形——契约或重大风险变化、新增权限、独立验收超限仍有未决反例等）。
+- worker 按子项类型执行其 owning skill（cs-feat / cs-issue / cs-refactor）的完整纪律。worker 是范围受限的执行者：仅被授权按其 owning skill 的 `独立验收` 派发验收；worker 不得派发其他执行 agent。
+- worker 按项目或宿主已有的委派方式创建；具体后端与 model 约束属于项目上下文，不写入本 skill。
+- worker 承担实现纪律，选择目标是质量而非独立性：显式选择当前会话可用的最强稳定 model，默认与主流程同构即可，不为 worker 追求异构，禁止依赖默认模型。推理强度与子项契约的风险和设计密度相称：纯机械性子项可降档，含设计取舍、跨模块影响或高失败代价的子项用最强档，拿不准时不降档。
+- 每个 worker 的创建方式、agent/model 与选择原因写入其 contextPacket 记录。
 - worker 在隔离工作区交付可集成状态：已有 commit 授权下的明确标记 WIP/checkpoint commit（对应 SKILL.md 隔离基线条款），或等效 patch；正式里程碑 commit 只由主流程创建。
 - worker 运行健康与失败判定沿用 SKILL.md 的 run identity 条款：绑定运行等待终态返回，idle 且无可恢复 run identity 视为委派失败，先诊断再决定一次有界重派，不盲目重发。
 
@@ -49,7 +49,7 @@
 - `epic-global` blocker 不做隔离处理：停止补发新子项，写 Epic 级 `blocked_by` 并执行 SKILL.md 既有暂停协议；并行不得成为绕过 owner gate 或暂停清单的通道。
 - 跨会话恢复以游标为准：已集成子项以 milestone commit 为准。`active_items` 中的子项先按恢复记录查询 run identity——运行仍健康则继续绑定等待，不重复派发；运行已终止的，按 `workspace` 与 `base` 收割隔离工作区中可核实的交付并集成；只有确认旧 run 不可恢复且交付不可核实时，才重派 fresh worker 并更新该项恢复记录。
 
-## review 并发边界
+## 验收并发边界
 
-- 子项级 review 属于 worker 内 owning skill 门槛，可与其他子项并行，各自 reviewer lineage 与轮次计数独立。
-- Epic 级 design review、contract review 与 final acceptance review 不并行、不下放 worker，仍由主流程按 SKILL.md 审查协议执行；final acceptance 前必须完成全部子项集成。
+- 子项级独立验收属于 worker 内 owning skill 门槛，可与其他子项并行，各自轮次计数独立。
+- Epic 整体验收不并行、不下放 worker，由主流程按 SKILL.md 执行；整体验收前必须完成全部子项集成。

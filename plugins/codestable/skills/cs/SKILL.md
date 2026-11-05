@@ -37,7 +37,6 @@ argument-hint: "[诉求]"
 | 新功能、功能改造 | `cs-feat` |
 | 排查、诊断、bug、报错、性能回退、行为异常 | `cs-issue` |
 | 行为等价的重构、主动性能优化 | `cs-refactor` |
-| 审查 diff 或按需审计代码 | `cs-review` |
 | 大需求拆解与长程推进 | `cs-epic` |
 | 沉淀经验、教训、"记住这个" | `cs-keep` |
 | 仓库接入 / v1 升级 | `cs-onboard`（只能由用户调用：提示运行 `/cs-onboard`，不代为执行） |
@@ -54,7 +53,7 @@ CodeStable 是一层薄研发纪律加一个项目记忆闭环。项目记忆都
 Epic 采用职责互斥的双层文档：永久 Epic 上下文优先沿用项目已有 Epic / RFC / initiative 归宿，否则首次使用时按需创建 `docs/epics/`；临时 `.codestable/work/epic-{slug}.md` 只保存执行游标，完成后清理。`cs-goal` 中有价值的目标契约、恢复、人工门槛和终态验收已并入 `cs-epic`，但不恢复 `cs-goal` 入口、goal package、`state.yaml`、逐轮 iteration 报告或 runtime gate。
 
 v1 的 24 个旧入口（cs-feat-design、cs-goal、cs-audit、cs-note、cs-feedback、cs-roadmap 系等）已并入
-上表：设计与需求澄清是按风险或 Epic 契约触发的可用保障，审计是 cs-review 的模式，沉淀统一走
+上表：设计与需求澄清是按风险或 Epic 契约触发的可用保障，审查与审计交给宿主或项目已有的 review 能力，沉淀统一走
 cs-keep。
 
 导览与推荐本身不写任何文件。

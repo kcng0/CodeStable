@@ -1,7 +1,7 @@
 # Epic 共享语言
 
 只在新词、重载词或相邻概念边界会改变目标、范围、事实权威、生命周期、验收或子项契约时使用。
-它让 proposed Epic 对 owner、reviewer 与执行者表达同一件事，不负责建立一套与项目文档竞争的词典。
+它让 proposed Epic 对 owner 与执行者表达同一件事，不负责建立一套与项目文档竞争的词典。
 
 ## 建模与归属
 
@@ -34,9 +34,9 @@
 - 子项契约沿用相同词汇，一个不了解讨论过程的执行者能从定义与场景判断交付边界；
 - owner 对产品含义或概念边界的 HITL 已解决；可核实事实没有被上交给 owner。
 
-Language Clear 是 Route Clear 的组成部分，不是新的 owner gate。owner 在 review 后询问术语且暴露了
+Language Clear 是 Route Clear 的组成部分，不是新的 owner gate。owner 在确认前询问术语且暴露了
 目标、范围、权威、验收或子项边界的不同理解时，候选尚未清晰，必须更新永久 Epic 并按原契约规则
-重新 review/确认；只解释不进入 owner 契约的实现细节时不重开设计。
+重新确认；只解释不进入 owner 契约的实现细节时不重开设计。
 
 跨任务稳定的领域术语毕业到项目已有 canonical 领域文档；没有归宿时先留在永久 Epic 并给出建议
 落点，owner 可在既有 gate 或后续治理中选择；未选择归宿不阻塞当前 Epic，也不自动创建 `CONTEXT.md`、

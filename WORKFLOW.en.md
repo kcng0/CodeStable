@@ -2,7 +2,7 @@
 
 ## Workflow
 
-CodeStable v2 consists of eight independently installed thin-harness skills and a project-memory
+CodeStable v2 consists of seven independently installed thin-harness skills and a project-memory
 loop. `cs` classifies whether the user wants execution, discussion first, advice, or an overview.
 Explicit action dispatches in the same turn by default; a discussion-first request converges in the
 current session and hands off under existing authorization; advice only recommends, and a request
@@ -12,12 +12,12 @@ without a task gets an overview.
 unsure which entry    -> cs
 discuss / align first -> cs -> cs-feat / cs-issue / cs-epic
 onboard / v1 upgrade  -> cs-onboard
-diagnose / investigate -> cs-issue (no product diff; no change review)
+diagnose / investigate -> cs-issue (no product diff; no independent acceptance)
 new capability -> cs-feat
 authorized repair of bug / performance regression / broken behavior -> cs-issue
 equivalent refactor -> cs-refactor
 large initiative      -> cs-epic -> cs-feat / cs-issue / cs-refactor
-independent review / audit -> cs-review
+review / audit        -> host or project review capability
 lessons and memory    -> cs-keep
 ```
 
@@ -34,7 +34,7 @@ lessons and memory    -> cs-keep
   scope, non-goals, acceptance, verified repository facts and sources, owner decisions, unresolved risks, and
   asset pointers. With existing execution authorization, it hands off in the same turn to `cs-feat`, `cs-issue`,
   or `cs-epic` and must not ask whether to continue. Discussion itself creates no authorization. The handoff does
-  not expand authorization or replace the owning skill's review, verification, or owner gates.
+  not expand authorization or replace the owning skill's verification, acceptance, or owner gates.
 - Raw questions, answers, unresolved discussion, and candidate branches are not persisted. Stable terms graduate
   to the project's existing canonical terminology home. A structural choice becomes an ADR only when it is hard
   to reverse, surprising without context, and the result of a real trade-off. The owning skill graduates task
@@ -55,7 +55,7 @@ Shared language is a conditional design discipline, not a fixed phase for every 
 - The agent verifies repository facts; product meaning and concept boundaries enter HITL after facts, options, and trade-offs are explicit. This is not a new owner gate and does not offload researchable facts.
 - Stable domain terms use existing canonical domain docs; architecture roles stay in the current design. Without a home, definitions stay in the task packet or permanent Epic with a suggested destination that does not block
   delivery and does not automatically create `CONTEXT.md` or a parallel glossary.
-- Design / contract review checks define-before-use, one meaning per term, and scenario consistency, but cannot prove owner understanding. A post-review terminology question that exposes a contract-level mismatch means the
+- Before owner confirmation of a design or contract, the agent self-checks define-before-use, one meaning per term, and scenario consistency, but the self-check cannot prove owner understanding. A pre-confirmation terminology question that exposes a contract-level mismatch means the
   candidate is not clear; explaining an implementation detail alone does not reopen design.
 
 Task type determines the engineering method; actual risk determines assurance strength:
@@ -64,7 +64,7 @@ Task type determines the engineering method; actual risk determines assurance st
 Execution flow = minimum complete loop + the least assurance required by each unexcluded risk
 ```
 
-Independent review is not a default step. Each risk adds only the assurance directly required by that risk.
+Independent acceptance is not a default step. Each risk adds only the assurance directly required by that risk.
 
 Before selecting the minimum complete loop, perform one silent, bounded check against the goal and the
 paths, symbols, trust boundaries, and effects outside the codebase that the change is expected to or actually
@@ -75,22 +75,20 @@ only evidence about impact: line count, file count, prose versus code, and task 
 Add only the assurance directly required by each risk fact:
 
 - An uncertain goal, root cause, or implementation direction, or a real trade-off that changes the result -> targeted diagnosis, a question, or design; obtain owner confirmation when the owner must choose.
-- A change that breaks compatibility or changes a public contract used by multiple consumers -> contract confirmation, matching contract tests, and canonical documentation; add independent review when compatibility
-  or consumer impact remains uncertain.
-- A change that changes authorization, security, privacy, or another trust boundary -> targeted threat/security evidence and independent review; obtain confirmation when the owner's authorization boundary changes.
-- A change that changes persisted data, schema, or a migration path -> compatibility/migration verification, applicable backup and rollback/recovery evidence, and independent review; confirm destructive or irreversible work.
-- A change that changes concurrency, ordering, or consistency semantics -> matching race/order verification and independent review; confirm when the semantics involve a trade-off.
-- A change that creates an irreversible effect outside the codebase -> confirm before execution, provide applicable dry-run, idempotency, compensation, or recovery evidence, and add independent review.
-- Work that addresses a performance regression or changes a performance-sensitive path -> targeted profiling, a baseline, or a before/after comparison; add independent review only when SLO, cost, or propagation is material
-  or uncertain.
-- A change that has broad impact or can propagate failure across modules -> expand to affected regression checks; add a full suite or independent review only when consumer/failure scope remains uncertain or failure cost is high.
+- A change that breaks compatibility or changes a public contract used by multiple consumers -> contract confirmation, matching contract tests, and canonical documentation.
+- A change that changes authorization, security, privacy, or another trust boundary -> targeted threat/security evidence; obtain confirmation when the owner's authorization boundary changes.
+- A change that changes persisted data, schema, or a migration path -> compatibility/migration verification, applicable backup and rollback/recovery evidence; confirm destructive or irreversible work.
+- A change that changes concurrency, ordering, or consistency semantics -> matching race/order verification; confirm when the semantics involve a trade-off.
+- A change that creates an irreversible effect outside the codebase -> confirm before execution, provide applicable dry-run, idempotency, compensation, or recovery evidence.
+- Work that addresses a performance regression or changes a performance-sensitive path -> targeted profiling, a baseline, or a before/after comparison.
+- A change that has broad impact or can propagate failure across modules -> expand to affected regression checks; add a full suite only when consumer/failure scope remains uncertain or failure cost is high.
 
 When the user says “flow is too heavy / this is only a small change / documentation exceeds the code,” this triggers
 a reassessment of risk and assurance, not an unconditional bypass of safety gates. Stop adding artifacts and
 recalculate; keep a gate only by naming the concrete risk that prevents lowering it. Continuity needs are not risk
 gates: cross-session work, multi-agent handoff, or an explicit request for a durable record adds only one temporary
 work cursor. Ordinary work uses the lowest-cost authoritative targeted verification and does not automatically stack
-a full suite, browser smoke, or independent review.
+a full suite, browser smoke, or independent acceptance.
 
 - `cs-feat` starts with the minimum complete loop and adds assurance only for the risk facts above;
   it asks for confirmation only when an owner choice is required.
@@ -104,52 +102,24 @@ a full suite, browser smoke, or independent review.
   under behavioral equivalence remains in `cs-refactor`.
 - `cs-epic` keeps approved delivery contracts in a permanent Epic document and active execution in
   a temporary work cursor. Decomposition, contract changes, and overall acceptance each cross an owner gate.
-- When independent review is needed, the outer workflow creates the reviewer. That reviewer runs
-  `cs-review` once per round and does not create another agent before returning a result. Each independent
-  review stage starts with one fresh reviewer. Reviewer independence means independence from the implementer,
-  not amnesia about its own prior review.
-- A review stage is defined by one review purpose. Design review, change review, contract review, and Epic final acceptance are
-  separate stages. Only re-review driven by fixes for that stage's findings remains in the same stage and reuses
-  its reviewer lineage; a changed review purpose starts a new stage.
-- Before creating a reviewer, the current workflow discovers the subagent creation and management
-  capabilities callable in the current session. It first follows explicit creation-method/model
-  constraints in project context. After meeting the review quality floor, it prefers an agent
-  heterogeneous to the implementer and explicitly selects the strongest stable model. Reviewer creation
-  methods prefer managed structured delegation, then a host subagent. A bounded local agent CLI is only a fallback.
-  When no qualified heterogeneous candidate exists, fall back to the strongest stable homogeneous model;
-  never rely on a default model. A PATH executable scan is not capability discovery. Exact backend and model
-  constraints belong to project context, not to a shipped skill. Record the final creation method, agent/model,
-  and fallback reason in the task packet.
-- Before dispatch, the outer workflow must freeze an explicit review target: prefer a staged diff or
-  explicit range/patch for diff review; design review may freeze an existing repository design document
-  or verbatim design text + SHA-256 in the task packet; audit freezes a commit plus scope. With the packet
-  form, the first round sends the text and hash verbatim, and the reviewer reviews that text as the target;
-  a finding-driven follow-up carries the latest full text, previous and current hashes, and repair summary.
-  It does not move that target or its worktree until the reviewer returns; a changed target invalidates the round.
-- `cs-review` is a read-only leaf executor for change, module, or repository review. The outer
-  workflow owns fixes and any later review round.
-- With blocking findings or important findings not explicitly accepted by the user, do not commit the
-  current candidate or create a formal milestone. After finding-driven fixes, rerun verification, freeze a
-  new complete target, and continue through a follow-up in the same reviewer's same session. The re-review
-  examines the complete current candidate and the repair delta, classifies prior findings as resolved or
-  unresolved, and reports new findings; it cannot be a checklist-only pass.
-- A review stage allows at most three completed rounds with terminal reports. Replacing a reviewer does not reset that count.
-  Replace one only when the original run/session fails or cannot be recovered, capability is insufficient,
-  the target, scope, design, or core path changes materially, the reviewer says it can no longer judge
-  independently, or the owner requests a second opinion. A replacement starts fresh. Complete the selected
-  assurance first. A review gate is required only when review was actually triggered, and a formal semantic
-  milestone also requires existing commit authorization; a WIP/checkpoint exists only for recovery or an isolated
-  baseline and does not mean approval.
+- Independent acceptance is separate from risk assurance: by default the author self-verifies on the real
+  path. Only schema or data migration, authentication/authorization decisions, billing/amount calculation,
+  concurrency/locking/idempotency logic, an incompatible external API change, or a user request triggers
+  independent-context acceptance through the project's or host's existing delegation. The dispatch names the
+  working directory, change scope, expected behavior, and real-path entry in business-correctness terms; the
+  acceptor looks for counterexamples on the real path, not only in the diff. When unsure whether a condition
+  applies, do not dispatch; add one line at the end of the delivery saying an acceptor can recheck it.
+- Counterexamples that affect correctness or requirements are rechecked by the acceptor after the fix or
+  accepted by the user, for at most two rounds; unresolved counterexamples go to the user. Project or user
+  acceptance rules take precedence. CodeStable ships no reviewer skill and prescribes no reviewer creation
+  method, model, or review rounds; review and audit belong to the host's or project's review capability.
+- A formal semantic milestone requires the confirmation and verification gates, no unresolved counterexample
+  from any triggered independent acceptance, and existing commit authorization; a WIP/checkpoint exists only
+  for recovery or an isolated baseline and does not mean approval.
 - With `continuous` or `per-item`, an Epic allows only one `current_item` at a time. This is a serialization constraint, not a per-item owner gate.
   Under the continuous policy, an ordinary item milestone advances automatically; it must not ask whether
   to continue to the next item or return as a terminal result. Per-item pauses require an explicit owner policy
   or a real gate. Under `parallel`, the main workflow stays the sole orchestrator and cursor writer, advancing dependency-independent items concurrently and serializing integration and milestones.
-- A healthy running reviewer remains bound to its run and target.
-  When Awaiting carries the same queryable run identity and remains active, keep waiting;
-  discovering a better creation method later does not justify cancellation, duplicate creation, or parallel
-  dispatch. Only terminal failure without a report, an unrecoverable run identity, a capability mismatch,
-  or target invalidation fails the delegation; it does not consume a review round. The outer workflow diagnoses
-  before a bounded retry, creation-method switch, or escalation; it never blindly resends the task.
 - `cs-keep` compresses frequently needed facts into `## 项目事实` in `AGENTS.md`, stages experience without a stronger owner as
   lessons, and graduates it to mechanical guards, project docs, or ADRs.
 
@@ -204,7 +174,7 @@ When the route is still unclear during `proposed + planning`, `cs-epic` performs
 - The route is clear, reviewable, and executable only when remaining unknowns cannot change goals, scope,
   non-goals, acceptance, item boundaries, dependencies, or major risks, and stable-ID item contracts name the
   owning skill, dependencies, and acceptance. Route clear is not a new owner gate; the complete proposed Epic
-  then enters the existing design review and first owner confirmation.
+  then enters the existing first owner confirmation.
 - Skip route discovery when the route is already clear, only one local technical unknown remains, or the only
   reason is high risk, file count, or cross-session continuity. The relevant owning skill handles local design
   and assurance.
@@ -223,17 +193,16 @@ When the route is still unclear during `proposed + planning`, `cs-epic` performs
 
 An Epic retains three owner gates:
 
-1. The current outer workflow first creates a fresh reviewer for design review of the proposed
-   decomposition. After findings are handled and re-reviewed in the same lineage, the owner confirms goals,
-   boundaries, acceptance, and item contracts before execution starts.
+1. The owner confirms the proposed decomposition's goals, boundaries, acceptance, and item contracts before
+   execution starts.
 2. During execution, after the permanent document has been approved, changes to goals, scope, non-goals,
-   acceptance, item membership/definitions, or major risks update the permanent document. These contract changes
-   start a separate contract-review stage with a fresh reviewer and require owner reconfirmation. In-boundary
-   technical choices and ordering adjustments that do not change dependencies or acceptance add no gate.
-3. After every item and integration verification complete, the cursor enters acceptance. Final acceptance is
-   a separate review stage: the current outer workflow starts a new fresh-reviewer lineage instead of reusing an
-   item, design-review, or contract-review lineage, and reviews against the latest owner-approved criteria. Passing that gate does
-   not replace the owner's final acceptance.
+   acceptance, item membership/definitions, or major risks first update the permanent document and require
+   owner reconfirmation. In-boundary technical choices and ordering adjustments that do not change
+   dependencies or acceptance add no gate.
+3. After every item completes, the cursor enters acceptance and runs integration verification on the real path
+   against the latest owner-approved criteria. When the Epic change hits an independent-acceptance hard
+   condition or the owner asks, the same acceptance rule looks for counterexamples against the overall
+   criteria. The owner still gives final acceptance.
 
 The first gate determines item progression, milestone commit, and remote publication policies once. Approving
 the decomposition does not itself grant version-control authorization. Store those policies in the work cursor
@@ -246,12 +215,12 @@ With `item_progression: continuous`, after a non-final item completes, choose th
 permanent-document order whose dependencies are satisfied and continue in the same entrusted workflow. An
 ordinary item completion is not an owner gate; the workflow must not ask whether to continue to the next item
 or return that completion as terminal. With `per-item`, pause under the recorded per-item checkpoint policy.
-Owning-skill gates, important findings requiring owner acceptance, real blockers, new authorization, and the
+Owning-skill gates, counterexamples still unresolved after two acceptance rounds, real blockers, new authorization, and the
 final owner gate may still pause execution. With `parallel`, workers execute dependency-independent items in host-provided isolated workspaces while the main workflow remains the sole cursor writer and serializes integration: it merges each delivery without advancing mainline history, re-verifies on the merged result, and only then creates the semantic milestone; when isolation or every qualified worker-creation capability is unavailable, execution degrades to serial within the session without changing the recorded policy, and parallel execution adds no owner gate (see `references/parallel-execution.md` in `cs-epic`).
 
 With `remote_publish: each-milestone`, publish after every semantic commit using the branch/remote policy
-already selected by the project, host, or owner. With `final`, publish once after integration verification and
-the final acceptance review pass, before requesting the owner's final acceptance. With `manual`, the agent does
+already selected by the project, host, or owner. With `final`, publish once after integration verification (and any
+triggered independent acceptance) passes, before requesting the owner's final acceptance. With `manual`, the agent does
 not publish remotely. An unspecified branch/remote or a publication failure records a blocker and pauses; the
 agent neither chooses a policy nor continues silently.
 
@@ -296,5 +265,5 @@ structure; when no canonical home exists, ask the owner to choose one and record
 keep stable contracts in the permanent Epic. `reference/`, `tools/`, `gates/`, `hooks/`, and
 `runtime-manifest.json` remain only for legacy compatibility; v2 does not execute the old runtime.
 
-The 32 skills in v1.0.4 converge to eight in v2. The other 24 entries are retired and are not installed
+The 32 skills in v1.0.4 converge to seven in this fork. The other 25 entries are retired and are not installed
 with v2. See [SKILL_CATALOG.en.md](./SKILL_CATALOG.en.md) for the complete mapping.

@@ -6,7 +6,7 @@
 
 **让 AI 编码在长期项目中保持边界、证据和记忆。**
 
-<p><img src="https://img.shields.io/badge/status-beta-F59E0B?style=flat-square" alt="Status"/> <img src="https://img.shields.io/badge/cs--skills-8-6366F1?style=flat-square" alt="CodeStable Skills"/> <img src="https://img.shields.io/badge/license-MIT-10B981?style=flat-square" alt="License"/></p>
+<p><img src="https://img.shields.io/badge/status-beta-F59E0B?style=flat-square" alt="Status"/> <img src="https://img.shields.io/badge/cs--skills-7-6366F1?style=flat-square" alt="CodeStable Skills"/> <img src="https://img.shields.io/badge/license-MIT-10B981?style=flat-square" alt="License"/></p>
 </div>
 
 > **kcng0 fork**：基于上游 [codestable/CodeStable](https://github.com/codestable/CodeStable) `19c796de`，版权归上游作者。差异与理由见 [ADR-009](docs/adr/009-team-knowledge-out-of-codestable-dir.md)。
@@ -24,7 +24,7 @@ cs：直接执行 / 当前会话讨论 / 给出建议
    ↓
 feat · issue · refactor · epic
    ↓
-相称的验证 + 必要的 review / owner gate
+相称的验证 + 必要的独立验收 / owner gate
    ↓ 代码结果 + 项目已有的 canonical knowledge
 ```
 
@@ -34,14 +34,14 @@ feat · issue · refactor · epic
 - **团队上下文共享**：推荐使用 [Threadshare](https://github.com/team-harness/threadshare)，把 Codex、Claude Code
   等 Agent 会话转换成只读链接，供团队成员和后续 Agent 阅读、交接；
 - **多 Agent 编码协同**：推荐使用 [cs-agent](https://github.com/codestable/cs-agent-mcp)，在编码过程中统一创建、
-  调用和管理 Codex、Claude 等子 Agent，也可承担异构独立 review。
+  调用和管理 Codex、Claude 等子 Agent，也可承担独立验收。
 
 三者互补：CodeStable 不负责发布会话或编排 Agent，Threadshare 和 cs-agent 也不替代 CodeStable 的工程契约。
 
 你只需要告诉 `cs` 想完成什么：
 
 - **需求清楚时**：它直接开始，并用足够的验证交付结果；
-- **遇到具体风险时**：它只增加与风险对应的确认、测试或 review，不自动启用整套流程；
+- **遇到具体风险时**：它只增加与风险对应的确认或测试，不自动启用整套流程；
 - **你想先讨论时**：它先和你对齐目标、术语和边界；未经明确授权，不会修改代码；
 - **名词可能影响理解时**：它先对齐含义，形成当前任务的共享语言；没有歧义时，直接沿用项目已有说法。
 
@@ -65,7 +65,7 @@ Claude plugin marketplace：
 /plugin install codestable@codestable
 ```
 
-`skills` CLI（v1 用户须先按[升级指南](./UPGRADE.md#从-v104-升级到-v2)精确删除 24 个退役入口，再安装 v2）：
+`skills` CLI（v1 用户须先按[升级指南](./UPGRADE.md#从-v104-升级到-v2)精确删除 25 个退役入口，再安装 v2）：
 
 ```bash
 npx skills@latest add kcng0/CodeStable/plugins/codestable
@@ -79,7 +79,7 @@ npx skills@latest add kcng0/CodeStable/plugins/codestable
 
 ### 开始工作
 
-不知道该用哪个入口时调用 `/cs`；也可以直接调用 owning skill。v2 交付 8 个 skill：
+不知道该用哪个入口时调用 `/cs`；也可以直接调用 owning skill。本 fork 交付 7 个 skill：
 
 | Skill | 用途 |
 |---|---|
@@ -89,10 +89,7 @@ npx skills@latest add kcng0/CodeStable/plugins/codestable
 | `cs-issue` | 诊断问题；获授权后用红到绿证据修复 |
 | `cs-refactor` | 在行为等价证据下调整结构或性能 |
 | `cs-epic` | 拆解并按已确认策略推进多个可交付子项 |
-| `cs-review` | 只读叶子执行器；单轮审查，不创建子 agent |
 | `cs-keep` | 管理有证据的项目事实、lesson 生命周期与 canonical 归宿 |
-
-`cs-code-review` 是 `cs-review` 的兼容别名，只转发，不包含独立规则。
 
 ## 三个核心原则
 
@@ -104,7 +101,9 @@ CodeStable 给强模型写责任，不写逐步脚本。skill 只约束目标、
 
 ### 2. 证据先于结论
 
-功能实现需要与风险相称的设计和验证；bug 修复先红后绿；重构先建立行为等价证据。独立审查由外层流程创建只读 reviewer。
+功能实现需要与风险相称的设计和验证；bug 修复先红后绿；重构先建立行为等价证据。
+
+默认作者在真路径上自验；只有迁移、权限、计费、并发或不兼容 API 等硬条件命中或用户要求时，才派独立上下文验收。
 
 人在产品契约变化、重大风险或整体接受时进入，不在每个机械步骤上重复确认。
 
@@ -145,7 +144,7 @@ CodeStable 边做边识别晶化时刻：任务中静默观察，普通收尾最
 
 当路线尚不清晰时，永久 Epic 文档本身就是路线地图，决策依赖派生 frontier。
 
-agent 解决事实，真正的产品判断与取舍进入 HITL。路线清晰、可审查、可执行后，才进入既有 design review、owner 确认与执行。
+agent 解决事实，真正的产品判断与取舍进入 HITL。路线清晰、可审查、可执行后，才进入既有 owner 确认与执行。
 
 临时 work 游标只保存永久文档指针、批准 revision、执行进度、策略与证据。
 
@@ -160,7 +159,7 @@ CodeStable 更适合：
 - 会持续迭代数月或数年的软件项目；
 - 需要让不同会话、模型或开发者准确召回历史约束；
 - 希望 AI 高效执行，同时由人掌握产品边界和最终接受；
-- 重视可验证结果、独立审查和知识复用的团队。
+- 重视可验证结果、独立验收和知识复用的团队。
 
 它不是：
 
@@ -171,13 +170,13 @@ CodeStable 更适合：
 
 CodeStable 可以与 Agent 编排工具共存。它负责软件任务的边界、证据和记忆，不接管宿主如何组织 Agent。
 
-需要多 Agent 协作，或需要在 CodeStable 流程中由异构 Agent 承担独立 review 时，推荐配合
+需要多 Agent 协作，或需要在 CodeStable 流程中由异构 Agent 承担独立验收时，推荐配合
 [cs-agent](https://github.com/codestable/cs-agent-mcp) 使用。
 
 ## 深入文档
 
 - [完整工作流与项目结构](./WORKFLOW.md)
-- [8 个 skill 的职责与旧入口映射](./SKILL_CATALOG.md)
+- [7 个 skill 的职责与旧入口映射](./SKILL_CATALOG.md)
 - [安装升级与 v1 项目边界](./UPGRADE.md)
 - [为什么设计 CodeStable](./docs/why-codestable.md)
 - [路线图](./ROADMAP.md)

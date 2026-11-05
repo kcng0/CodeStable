@@ -102,7 +102,6 @@ frontier 只派生、不持久化：它是 `待决策` 中所有 `depends_on` �
   以及何时必须回到 Epic 重新确认契约。
 
 route clear 不是“所有实现细节都已决定”，也不是新的 owner gate、执行授权、commit 授权或发布授权。
-达到它之后才冻结完整 proposed Epic，进入现有 design review；review findings 收敛后仍由 owner 执行
-现有第一道确认。冻结前移除 `待决策` 与 `尚未明确` 两节；只有 `AFK` 的局部未知可以下放并归入
+达到它之后才冻结完整 proposed Epic，交 owner 执行现有第一道确认。冻结前移除 `待决策` 与 `尚未明确` 两节；只有 `AFK` 的局部未知可以下放并归入
 对应子项契约，仅把已解决决策和下放 AFK 局部未知带来的剩余风险归入 `遗留风险`。批准 revision
 生效后，路线发现结束，`cs-epic` 的执行循环接管。

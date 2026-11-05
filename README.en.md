@@ -6,7 +6,7 @@
 
 **Keep boundaries, evidence, and memory intact as AI coding projects evolve.**
 
-<p><img src="https://img.shields.io/badge/status-beta-F59E0B?style=flat-square" alt="Status"/> <img src="https://img.shields.io/badge/cs--skills-8-6366F1?style=flat-square" alt="CodeStable Skills"/> <img src="https://img.shields.io/badge/license-MIT-10B981?style=flat-square" alt="License"/></p>
+<p><img src="https://img.shields.io/badge/status-beta-F59E0B?style=flat-square" alt="Status"/> <img src="https://img.shields.io/badge/cs--skills-7-6366F1?style=flat-square" alt="CodeStable Skills"/> <img src="https://img.shields.io/badge/license-MIT-10B981?style=flat-square" alt="License"/></p>
 </div>
 
 > **kcng0 fork** of upstream [codestable/CodeStable](https://github.com/codestable/CodeStable) `19c796de`; copyright remains with the upstream authors. See [ADR-009](docs/adr/009-team-knowledge-out-of-codestable-dir.md) for the differences.
@@ -24,7 +24,7 @@ cs: execute directly / discuss in this session / advise
    ↓
 feat · issue · refactor · epic
    ↓
-proportionate verification + necessary review / owner gates
+proportionate verification + necessary independent acceptance / owner gates
    ↓ code results + the project's canonical knowledge
 ```
 
@@ -34,7 +34,7 @@ For team workflows, combine them by responsibility:
 - **Team context sharing**: use [Threadshare](https://github.com/team-harness/threadshare) to turn Codex,
   Claude Code, and other agent conversations into read-only links for teammates and later agents.
 - **Multi-agent coding collaboration**: use [cs-agent](https://github.com/codestable/cs-agent-mcp) to create,
-  invoke, and manage Codex, Claude, and other subagents during implementation, including independent review.
+  invoke, and manage Codex, Claude, and other subagents during implementation, including independent acceptance.
 
 The three complement one another: CodeStable does not publish conversations or orchestrate agents, while
 Threadshare and cs-agent do not replace CodeStable's engineering contracts.
@@ -42,7 +42,7 @@ Threadshare and cs-agent do not replace CodeStable's engineering contracts.
 You only need to tell `cs` what you want to accomplish:
 
 - **When the request is clear**: it starts directly and delivers the result with enough verification.
-- **When it finds a concrete risk**: it adds only the confirmation, tests, or review needed for that risk; it
+- **When it finds a concrete risk**: it adds only the confirmation or tests needed for that risk; it
   does not enable the whole workflow.
 - **When you want to discuss first**: it aligns goals, terms, and boundaries with you. It will not change code
   without execution authorization.
@@ -69,7 +69,7 @@ Claude plugin marketplace:
 /plugin install codestable@codestable
 ```
 
-`skills` CLI (v1 users must first follow the [upgrade guide](./UPGRADE.en.md#upgrade-from-v104-to-v2) to remove the 24 retired entries, then install v2):
+`skills` CLI (v1 users must first follow the [upgrade guide](./UPGRADE.en.md#upgrade-from-v104-to-v2) to remove the 25 retired entries, then install v2):
 
 ```bash
 npx skills@latest add kcng0/CodeStable/plugins/codestable
@@ -83,7 +83,7 @@ Run `/cs-onboard` from the repository root. It adds a `## 项目事实` section 
 
 ### Start Working
 
-When you are unsure which entry fits, call `/cs`; you can also call the owning skill directly. v2 ships 8 skills:
+When you are unsure which entry fits, call `/cs`; you can also call the owning skill directly. this fork ships 7 skills:
 
 | Skill | Purpose |
 |---|---|
@@ -93,10 +93,7 @@ When you are unsure which entry fits, call `/cs`; you can also call the owning s
 | `cs-issue` | Diagnose problems; once repair is authorized, fix with red-to-green evidence |
 | `cs-refactor` | Change structure or performance under equivalence evidence |
 | `cs-epic` | Decompose and advance multiple deliverable items under confirmed policies |
-| `cs-review` | Read-only leaf executor; one review, with no child agent |
 | `cs-keep` | Manage evidence-backed project facts, lesson lifecycle, and canonical homes |
-
-`cs-code-review` is a compatibility alias of `cs-review`. It only forwards and contains no independent rules.
 
 ## Three Principles
 
@@ -108,7 +105,9 @@ Thin means no permanent state machine or stage-artifact micromanagement, not no 
 
 ### 2. Evidence before conclusions
 
-Feature work gets design and verification proportionate to risk; bug fixes go red to green; refactors establish equivalence first. The outer flow creates read-only reviewers.
+Feature work gets design and verification proportionate to risk; bug fixes go red to green; refactors establish equivalence first.
+
+The author self-verifies on the real path; independent acceptance runs only on hard conditions (migrations, authorization, billing, concurrency, incompatible APIs) or on request.
 
 Humans enter for product-contract changes, major risk, and overall acceptance, not every mechanical step.
 
@@ -150,7 +149,7 @@ Large initiatives separate durable contracts from temporary execution state. A p
 When the route is still unclear, the permanent Epic document itself is the route map; decision dependencies derive the frontier.
 
 The agent resolves facts, and genuine product judgment and trade-offs enter HITL. Once the route is clear, reviewable,
-and executable, existing design review, owner confirmation, and execution begin.
+and executable, existing owner confirmation and execution begin.
 
 A temporary work cursor keeps only its pointer, approved revision, progress, policies, and evidence.
 
@@ -165,7 +164,7 @@ CodeStable fits best when:
 - software will evolve for months or years;
 - later sessions, models, or developers must recover historical constraints accurately;
 - AI should execute efficiently while humans retain product boundaries and final acceptance;
-- the team values verifiable results, independent review, and reusable knowledge.
+- the team values verifiable results, independent acceptance, and reusable knowledge.
 
 It is not:
 
@@ -176,13 +175,13 @@ It is not:
 
 CodeStable can coexist with agent-orchestration tools. It owns task boundaries, evidence, and memory, not how the host organizes agents.
 
-For multi-agent collaboration or independent review by a heterogeneous agent inside a CodeStable flow, use
+For multi-agent collaboration or independent acceptance by a heterogeneous agent inside a CodeStable flow, use
 [cs-agent](https://github.com/codestable/cs-agent-mcp) alongside CodeStable.
 
 ## Go Deeper
 
 - [Full workflow and project structure](./WORKFLOW.en.md)
-- [Responsibilities of all 8 skills and retired-entry mappings](./SKILL_CATALOG.en.md)
+- [Responsibilities of all 7 skills and retired-entry mappings](./SKILL_CATALOG.en.md)
 - [Installation upgrades and the v1 project boundary](./UPGRADE.en.md)
 - [Why CodeStable exists](./docs/why-codestable.en.md)
 - [Roadmap](./ROADMAP.en.md)

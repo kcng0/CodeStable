@@ -2,7 +2,7 @@
 
 ## 工作流
 
-CodeStable v2 是 8 个独立安装的 thin-harness skill，加一个项目记忆闭环。`cs` 判别用户
+CodeStable v2 是 7 个独立安装的 thin-harness skill，加一个项目记忆闭环。`cs` 判别用户
 此刻要执行、先讨论、咨询还是了解体系：明确行动默认优先同轮直转；先讨论的请求在当前会话
 收敛并按授权移交；咨询只给推荐；无诉求时介绍体系。
 
@@ -10,12 +10,12 @@ CodeStable v2 是 8 个独立安装的 thin-harness skill，加一个项目记�
 不确定入口       -> cs
 先讨论 / 对齐     -> cs -> cs-feat / cs-issue / cs-epic
 仓库接入 / v1 升级 -> cs-onboard
-只诊断 / 排查     -> cs-issue（无产品 diff，不进入 change review）
+只诊断 / 排查     -> cs-issue（无产品 diff，不触发独立验收）
 新功能           -> cs-feat
 获授权修复 bug / 性能回退 / 行为异常 -> cs-issue
 行为等价重构      -> cs-refactor
 大需求拆解        -> cs-epic -> cs-feat / cs-issue / cs-refactor
-独立审查 / 审计   -> cs-review
+审查 / 审计       -> 宿主或项目已有的 review 能力
 经验与项目记忆    -> cs-keep
 ```
 
@@ -30,7 +30,7 @@ CodeStable v2 是 8 个独立安装的 thin-harness skill，加一个项目记�
 - handoff-ready 时，packet 保存目标入口、原始诉求、目标或期望行为、范围、非目标、验收、已核实
   仓库事实及来源、owner 决策、未决风险与资产指针。已有执行授权时同轮移交给 `cs-feat`、
   `cs-issue` 或 `cs-epic`，不再询问“是否继续”；讨论过程本身不产生授权，handoff 不扩大授权，
-  也不替代 owning skill 的 review、验证或 owner gate。
+  也不替代 owning skill 的验证、验收或 owner gate。
 - 原始问答、未决讨论和候选分支不落盘。稳定术语进入项目已有 canonical 术语归宿，结构性取舍仅在
   难逆转、缺少上下文会令人意外且存在真实取舍时进入 ADR；任务契约、永久 Epic、`## 项目事实` 与
   `docs/notes/` 由 owning skill 按既有规则毕业。没有 canonical 归宿时请 owner 选择，不新建平行真相。
@@ -51,8 +51,8 @@ CodeStable v2 是 8 个独立安装的 thin-harness skill，加一个项目记�
 - 稳定领域术语进入项目已有 canonical 领域文档；架构角色留在当前设计，结构性取舍按条件进入 ADR。
   没有归宿时先留在 task packet 或永久 Epic 并给出建议落点；owner 可在既有 gate 或后续治理中选择，
   未选择不阻塞当前交付，也不自动创建 `CONTEXT.md` 或平行词典。
-- design / contract review 检查先定义后使用、全文同义和场景一致，但不能替 owner 证明理解。owner 在 review 后
-  的术语问题若揭示契约级不同理解，候选仍未清晰；纯实现细节解释不重开设计。
+- owner 确认设计或契约前，agent 自查先定义后使用、全文同义和场景一致，但自查不能替 owner 证明理解。
+  owner 在确认前的术语问题若揭示契约级不同理解，候选仍未清晰；纯实现细节解释不重开设计。
 
 任务类型只决定工程方法，实际风险决定保障强度：
 
@@ -60,7 +60,7 @@ CodeStable v2 是 8 个独立安装的 thin-harness skill，加一个项目记�
 执行流程 = 最小闭环 + 每个未排除风险所要求的最少保障
 ```
 
-独立 review 不是默认步骤。一个风险只增加与它直接对应的保障，不自动打开整套流程。
+独立验收不是默认步骤。一个风险只增加与它直接对应的保障，不自动打开整套流程。
 
 选择最小闭环前，基于目标以及预计/实际触及的路径、符号、信任边界和代码外副作用，对下列风险做
 一次静默、有界核对，不生成逐项报告或新产物。一次最低成本定向核实后仍不能排除时先按风险存在处理，
@@ -71,22 +71,20 @@ CodeStable v2 是 8 个独立安装的 thin-harness skill，加一个项目记�
 
 - 目标、根因或实现方向不确定，或存在会改变结果的真实取舍 → 定向诊断、提问或 design；需要 owner
   选择时确认。
-- 破坏兼容性或改变多消费者依赖的公开契约 → 契约确认、对应契约测试与 canonical 文档；兼容范围或
-  消费者影响仍不确定时增加独立 review。
-- 改变权限、安全、隐私或其他信任边界 → 定向威胁/安全证据与独立 review；改变 owner 授权边界时确认。
-- 改变持久化数据、schema 或迁移路径 → 兼容/迁移验证、适用的备份与回滚/恢复证据、独立 review；
+- 破坏兼容性或改变多消费者依赖的公开契约 → 契约确认、对应契约测试与 canonical 文档。
+- 改变权限、安全、隐私或其他信任边界 → 定向威胁/安全证据；改变 owner 授权边界时确认。
+- 改变持久化数据、schema 或迁移路径 → 兼容/迁移验证、适用的备份与回滚/恢复证据；
   破坏性或不可逆时确认。
-- 改变并发、顺序或一致性语义 → 对应竞态/顺序验证与独立 review；语义存在取舍时确认。
-- 产生不可恢复的代码外副作用 → 执行前确认，提供适用的 dry-run、幂等、补偿或恢复证据，并独立 review。
-- 性能回退或性能敏感路径变化 → 定向 profile、基线或前后对比；SLO、成本或传播范围重大/不确定时
-  再增加独立 review。
+- 改变并发、顺序或一致性语义 → 对应竞态/顺序验证；语义存在取舍时确认。
+- 产生不可恢复的代码外副作用 → 执行前确认，提供适用的 dry-run、幂等、补偿或恢复证据。
+- 性能回退或性能敏感路径变化 → 定向 profile、基线或前后对比。
 - 改动影响面广或失败可跨模块传播 → 扩大到受影响回归；消费者或失败范围仍不确定、失败代价重大时，
-  才增加全量验证或独立 review。
+  才增加全量验证。
 
 用户指出“流程太重 / 只是小改动 / 文档比代码多”时，这是重新核对风险和保障的触发信号，
 不是无条件跳过安全门槛。停止继续增加产物并重算；仍需保留门槛时只说明阻止降级的具体风险。
 连续性需要不是风险门槛：跨会话、多人交接或用户要求留痕只增加单一临时 work 游标。普通改动选择成本最低且足够
-权威的定向验证，不自动叠加全量套件、浏览器 smoke 或独立 review。
+权威的定向验证，不自动叠加全量套件、浏览器 smoke 或独立验收。
 
 - `cs-feat` 从最小闭环开始，按上述风险映射逐项增加保障；只有需要 owner 选择时才确认。
 - `cs-issue` 先针对用户实际症状建立可重复的失败信号。只要求诊断时保持零产品改动，结论明确归为
@@ -95,19 +93,16 @@ CodeStable v2 是 8 个独立安装的 thin-harness skill，加一个项目记�
   和模块的回归，只有全量套件按独立风险决定是否叠加。
 - 性能回退或异常变慢进入 `cs-issue`；没有既有异常、仅要求行为等价的主动优化仍进入 `cs-refactor`。
 - `cs-epic` 用永久 Epic 文档维护批准后的交付契约，用临时 work 游标恢复活动执行；拆解、契约变化和整体验收分别经过 owner gate。
-- 需要独立审查时由外层主流程创建 reviewer；reviewer 每轮执行一次 `cs-review`，返回结果前不再创建子 agent。每个独立审查阶段的首轮使用 fresh reviewer；reviewer 独立性要求它独立于实现者，不要求对自身上一轮审查失忆。
-- 一个独立审查阶段由单一审查目的界定；design review、change review、contract review 与 Epic final acceptance 是不同阶段。只有为本阶段 findings 所作修复的复审，才属于同一阶段并沿用原 reviewer lineage；审查目的变化时开启新阶段。
-- 当前主流程创建 reviewer 前，先发现当前会话可调用的 subagent 创建与管理能力。项目上下文有显式创建方式/model 约束时先遵守。达到审查质量基线后，优先选择与实现者异构的 agent，并显式指定最强稳定 model；创建方式依次使用受管理的结构化委派能力、宿主 subagent、本机有界 agent CLI 回退，不得只扫 PATH。没有合格异构候选时回退同构最强模型。把最终创建方式、agent/model 与回退原因写入 task packet，禁止依赖默认模型。具体后端与 model 约束属于项目上下文，不进入 shipped skill。
-- 外层主流程派发前冻结一个明确的审查目标（diff review 优先 staged diff，也可用明确 range/patch；
-  design review 可冻结仓库内已有 design 文档版本，或 task packet 内原样全文 + SHA-256；audit 冻结
-  commit + 范围标识）。使用 packet 时首轮把全文与 hash 原样交给 reviewer，reviewer 审查的目标就是该文本；
-  finding-driven follow-up 携带最新全文、前后 hash 与修复摘要。reviewer 返回前不移动目标或
-  对应工作树；目标变化则本轮失效。
-- `cs-review` 是只读叶子执行器，也承接模块或全仓 audit；修复与复审由外层主流程负责。
-- 有 blocking 或未被用户明确接受的 important 时不提交当前候选，也不创建正式里程碑。主流程处理 findings 后修复、重新验证并冻结新的完整目标；仅因 findings 修复产生的复审沿用同一 reviewer 的同一 session，以 follow-up 继续。复审检查完整当前候选与本轮修复增量，逐项报告 `resolved` / `unresolved` / `new findings`，不得只核对旧 finding 或机械打勾。
-- 同一审查阶段累计最多 3 个有终态报告的轮次，更换 reviewer 不重置计数。只有原 run/session 失败或不可恢复、能力不满足、目标、范围、设计或核心路径发生重大变化、reviewer 声明无法继续独立判断，或 owner 要求第二意见时才更换 reviewer；更换时重新创建 fresh reviewer。完成所选保障后，实际触发 review 时才要求通过审查门槛，并且只有已有 commit 授权时才形成语义原子里程碑；WIP/checkpoint 只作恢复或隔离基线，不代表通过。
+- 独立验收与风险保障分开：默认由作者在真路径上自验；只有命中 schema 或数据迁移、鉴权/权限判定、
+  计费/金额计算、并发/锁/幂等逻辑、对外 API 不兼容变更，或用户要求时，才按项目或宿主已有的委派方式
+  派独立上下文验收。派发时给出工作目录、改动范围、预期行为与真路径入口，用业务正确性措辞；验收在
+  真路径上找反例，不只读 diff。拿不准是否命中时不派，在交付末尾一句话说明可让验收员复核。
+- 影响正确性或需求的反例修复后经验收员复验或经用户接受，最多 2 轮，仍有未决反例时交用户决定。
+  项目或用户另有验收规则时以该规则为准。CodeStable 不交付 reviewer skill，也不规定 reviewer
+  创建方式、model 或审查轮次；审查与审计交给宿主或项目已有的 review 能力。
+- 确认与验证门槛满足、独立验收（若触发）没有未决反例后，已有 commit 授权时才形成语义原子里程碑；
+  WIP/checkpoint 只作恢复或隔离基线，不代表通过。
 - `continuous` 与 `per-item` 策略下，Epic 同一时间只允许一个 `current_item`；这是串行约束，不是每个子项的人工 gate。连续策略下，普通子项达到语义原子里程碑后自动进入下一项，不得询问“是否继续下一项”或终态返回；逐项暂停必须是 owner 明示策略或真实门槛。`parallel` 策略下，主流程是唯一编排者与游标 writer，并行推进依赖互不阻塞的子项并串行集成里程碑。
-- 健康运行中的 reviewer 与原 run/target 绑定；running，或 Awaiting 携带同一可查询 run identity 且仍为活动态时继续等待，不因后来发现更优创建方式而取消、重复创建或并行补发。只有终止无报告、run identity 不可恢复、能力不满足或目标失效时，本轮才失败且不计审查轮次；外层主流程先诊断再决定有界重试、更换创建方式或上交，不盲目重发。
 - `cs-keep` 把高频事实压进 `AGENTS.md` 的 `## 项目事实`，把尚未被更强 owner 承接的经验暂存为 lesson，并推动它们
   毕业到机械 guard、项目文档或 ADR。
 
@@ -150,7 +145,7 @@ Epic 把长期产品意图与短期执行状态分成两层，并且只保留一
   frontier 决策名称、下一步、阻塞和证据指针，路线清晰前 `current_item` 保持 `null`。
 - 当剩余未知不能再改变目标、范围、非目标、验收、子项边界、依赖或重大风险，且带稳定 ID、
   owning skill、依赖与验收的子项契约已形成，此时路线清晰、可审查、可执行。route clear 不是新的
-  owner gate；完整 proposed Epic 随后进入现有 design review 和第一道 owner 确认。
+  owner gate；完整 proposed Epic 随后进入现有第一道 owner 确认。
 - 路线已经清晰、只是单个局部技术未知，或仅因高风险、文件多、跨会话时跳过路线发现，仍由对应
   owning skill 处理局部设计与保障。
 
@@ -167,15 +162,12 @@ Epic 把长期产品意图与短期执行状态分成两层，并且只保留一
 
 Epic 保留三道 owner gate：
 
-1. proposed 拆解先由当前主流程创建 fresh reviewer 做 design review；处理 findings 后按同一 lineage 复审，owner
-   确认目标、边界、验收和子项契约，才进入执行。
-2. 永久文档已批准后的执行中，目标、范围、非目标、验收、子项增删/定义或重大风险变化时，更新
-   永久文档；契约变化形成新的 contract review 审查阶段，由 fresh reviewer 审查并由 owner 确认。
-   边界内技术选择和不改变
-   依赖/验收的顺序微调不增加 gate。
-3. 全部子项完成并通过集成验证后，游标进入 acceptance；final acceptance 是独立审查阶段，
-   当前主流程另建 fresh reviewer 开始新的 lineage，不沿用子项、design review 或 contract review 的 lineage，对最新
-   owner 已批准的验收标准做 final acceptance review，门槛通过后仍由 owner 最终接受。
+1. owner 确认 proposed 拆解的目标、边界、验收和子项契约，才进入执行。
+2. 永久文档已批准后的执行中，目标、范围、非目标、验收、子项增删/定义或重大风险变化时，先更新
+   永久文档并重新征得 owner 同意。边界内技术选择和不改变依赖/验收的顺序微调不增加 gate。
+3. 全部子项完成后，游标进入 acceptance，在真路径上对最新 owner 已批准的验收标准运行集成验证；
+   Epic 改动命中独立验收硬条件或 owner 要求时，按同一独立验收规则对整体验收标准找反例。之后仍由
+   owner 最终接受。
 
 首次 gate 一次性确定子项推进、里程碑 commit 与远端同步策略；拆解确认本身不等于版本控制授权。
 策略写入 work 游标并在恢复时直接沿用，缺失或非法才暂停一次补记；owner 显式改变策略只更新游标，
@@ -186,14 +178,14 @@ Epic 保留三道 owner gate：
 `item_progression: continuous` 时，非最终子项完成后按永久文档顺序选择第一个依赖已满足的未完成
 子项，并在同一受托主流程继续。普通子项完成不是 owner gate；不得询问“是否继续下一项”，也
 不得把它作为终态返回。`per-item` 时按已记录的逐项 checkpoint 策略暂停。子项 owning skill 自身的
-门槛、需要 owner 明确接受的 important findings、真实阻塞、新增权限与最终 owner gate 仍可暂停。
+门槛、独立验收超过 2 轮仍未决的反例、真实阻塞、新增权限与最终 owner gate 仍可暂停。
 `parallel` 时，主流程把依赖互不阻塞的子项委派给隔离工作区中的 worker 并发执行（隔离与
 branch 策略仍由宿主提供），自己保持唯一游标 writer，按完成顺序串行集成：以不推进主历史的方式合入、在合并结果上重跑该
 子项权威验证，验证通过后才创建语义原子里程碑；全部合格 worker 创建能力或隔离能力均不可用时，
 本会话内退化为串行推进，不改变已记录的策略字段。并行不新增 owner gate，协议细节见 `cs-epic` 的 `references/parallel-execution.md`。
 
 `remote_publish: each-milestone` 在每个语义原子 commit 后按项目、宿主或 owner 已确定的
-branch/remote 策略发布；`final` 在集成验证与 final acceptance review 通过后、请求 owner 最终接受前
+branch/remote 策略发布；`final` 在集成验证（及触发的独立验收）通过后、请求 owner 最终接受前
 发布一次；`manual` 时 agent 不执行远端发布。branch/remote 未明确或发布失败时写入阻塞并暂停，
 agent 不自行选择或静默继续。
 
@@ -242,5 +234,5 @@ requirement 位置时才可维护；owner 首次指定时先把该项目事实�
 owner 选择并记录到 `docs/README.md`，稳定契约在确定前保留于永久 Epic。`reference/`、`tools/`、
 `gates/`、`hooks/` 与 `runtime-manifest.json` 只作 legacy compatibility，v2 不执行旧 runtime。
 
-v1.0.4 的 32 个 skill 在 v2 收敛为 8 个；其余 24 个入口已退役且不随 v2 安装。完整映射见
+v1.0.4 的 32 个 skill 在本 fork 收敛为 7 个；其余 25 个入口已退役且不随 v2 安装。完整映射见
 [SKILL_CATALOG.md](./SKILL_CATALOG.md)。

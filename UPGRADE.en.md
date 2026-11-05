@@ -36,13 +36,13 @@ For a project-scoped installation, omit `-g` and run the command inside that pro
 
 ## Upgrade from v1.0.4 to v2
 
-v2 reduces 32 entries to 8 primary skills and keeps only `cs-code-review` as a compatibility alias.
+This fork reduces 32 entries to 7 skills and keeps no compatibility alias.
 
-The current `skills` CLI does not prune names removed from a newer package during `add`, so the first upgrade must remove exactly 24 retired entries:
+The current `skills` CLI does not prune names removed from a newer package during `add`, so the first upgrade must remove exactly 25 retired entries:
 
 ```bash
 npx skills@latest remove \
-  cs-audit cs-brainstorm cs-doc-api cs-doc-tutorial cs-docs cs-docs-neat \
+  cs-audit cs-brainstorm cs-code-review cs-doc-api cs-doc-tutorial cs-docs cs-docs-neat \
   cs-domain cs-feat-accept cs-feat-design cs-feat-design-review cs-feat-ff \
   cs-feat-impl cs-feat-qa cs-feedback cs-goal cs-issue-analyze cs-issue-fix \
   cs-issue-report cs-note cs-refactor-ff cs-req cs-roadmap \
@@ -54,6 +54,8 @@ npx skills@latest add kcng0/CodeStable/plugins/codestable --skill '*' -g
 Removal is name-based and does not verify the installation source. Names outside this list are untouched. If you maintain a custom or third-party skill under one of these names, back it up and remove that name from the command first.
 
 For a project-scoped v1 installation, omit `-g` from both commands and run them in the project.
+
+When switching from upstream v2 to this fork, also remove `cs-review` and `cs-code-review`: review belongs to the host's or project's review capability, and task skills trigger independent acceptance on hard conditions.
 
 ## Project Assets Are Not Migrated
 
@@ -69,7 +71,7 @@ The retrieval and write policy remains owned by [WORKFLOW.en.md](./WORKFLOW.en.m
 
 - Call `/cs` and confirm the root entry is available.
 - `/cs-onboard` should maintain only minimal project memory and must not overwrite existing project docs.
-- With the `skills` CLI, confirm all 8 primary skills plus the `cs-code-review` compatibility alias are installed.
+- With the `skills` CLI, confirm all 7 skills are installed and no `cs-review` / `cs-code-review` remains.
 - When reporting an installation difference, include the installation entry point and version.
 
 Return to the [README](./README.en.md).

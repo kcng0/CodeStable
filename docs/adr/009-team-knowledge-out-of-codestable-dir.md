@@ -1,6 +1,6 @@
 ---
 adr: "009"
-title: "kcng0 fork：团队知识迁出 .codestable 与收敛的学习契约"
+title: "kcng0 fork：团队知识迁出 .codestable、收敛的学习契约与独立验收"
 status: Accepted
 date: 2026-11-05
 applies-to:
@@ -11,13 +11,12 @@ applies-to:
   - "plugins/codestable/skills/cs-issue/"
   - "plugins/codestable/skills/cs-refactor/"
   - "plugins/codestable/skills/cs-epic/"
-  - "plugins/codestable/skills/cs-code-review/"
 enforcement: test
 stage: [onboard, deliver, keep]
 lint: "python3 -m pytest tests/test_skill_contracts.py tests/test_v2_documentation_contract.py"
 ---
 
-# ADR-009: kcng0 fork：团队知识迁出 .codestable 与收敛的学习契约
+# ADR-009: kcng0 fork：团队知识迁出 .codestable、收敛的学习契约与独立验收
 
 ## Context
 
@@ -48,8 +47,7 @@ spec / ADR / 术语）和「只回写仍成立结论」更适合团队，但流�
 - `cs-onboard` 创建上述骨架：`AGENTS.md` 已存在时只追加 `## 项目事实` 段；`docs/` 已有内容时先把契约路径
   映射到既有位置并经 owner 确认；目录在第一次写入时创建，已有文档契约不覆盖。旧版
   `.codestable/attention.md` / `lessons/` 经 owner 同意后迁移，否则保留为只读历史。
-- `cs-onboard` 与纯转发的 `cs-code-review` 设 `disable-model-invocation: true`，只由用户调用；`cs` 路由
-  到接入时提示运行 `/cs-onboard`。
+- `cs-onboard` 设 `disable-model-invocation: true`，只由用户调用；`cs` 路由到接入时提示运行 `/cs-onboard`。
 
 ### 当前真相与学习
 
@@ -60,10 +58,23 @@ spec / ADR / 术语）和「只回写仍成立结论」更适合团队，但流�
 
 ### 交付
 
-- `cs-feat` / `cs-issue` 走真实入口验证时优先用项目内 verification skill 或 attention 记录的驱动方式；
+- `cs-feat` / `cs-issue` 走真实入口验证时优先用项目内 verification skill 或 `## 项目事实` 记录的驱动方式；
   没有时建议用 `create-verification-skill` 生成。
 - feat / issue 收尾在改变已有行为时附 `Spec impact`；refactor 只在发现文档漂移时附 `drift`；`cs-epic`
   收尾在登记了 Vision 时只提出 Vision 候选。
+
+### 独立验收取代审查协议
+
+- 删除 `cs-review` 与兼容别名 `cs-code-review`，本 fork 交付 7 个 skill。上游的 reviewer 创建发现、
+  fresh lineage、冻结目标与 hash、findings 分级、3 轮上限和等待协议全部移除；审查与审计交给宿主或项目
+  已有的 review 能力。
+- `cs-feat` / `cs-issue` / `cs-refactor` 的 `独立验收` 段：默认作者在真路径上自验；只在 schema 或数据迁移、
+  鉴权/权限判定、计费/金额计算、并发/锁/幂等逻辑、对外 API 不兼容变更，或用户要求时，按项目或宿主已有的
+  委派方式派独立上下文验收，用业务正确性措辞在真路径上找反例；拿不准时不派并在交付末尾说明可复核；
+  最多 2 轮；项目或用户另有验收规则时以其为准。
+- 风险映射表不再附加独立 review，只保留各风险自身的定向证据、备份/恢复与确认。Epic 拆解与契约变化只经
+  owner 确认，不另做 design / contract review；整体验收在真路径上跑集成验证，命中硬条件时按同一规则加
+  独立验收。本节取代 ADR-007 中「独立 review」保障与 review 门槛的部分，ADR-007 的风险映射其余部分仍有效。
 
 ## Rejected Alternatives
 
@@ -79,6 +90,11 @@ spec / ADR / 术语）和「只回写仍成立结论」更适合团队，但流�
 - **项目 ADR 用递增编号**：并行分支撞号。模板改用 `YYYY-MM-DD-{slug}` 或语义 slug；本仓库自身 ADR
   沿用既有 `NNN` 约定以便与上游对照。
 
+- **保留 `cs-review` 作为独立 reviewer 执行器**：其创建发现、lineage 与轮次规则和团队已有的宿主委派与
+  验收规则重叠且冲突（两者同一优先级，冲突时无胜者），并把「风险较高」变成默认的额外 review。
+- **只在 prompt 中写“请 review”，不要求独立上下文**：作者在同一上下文中复核会沿用自己的假设，找不到
+  需求理解层面的反例；硬条件命中时仍需独立上下文。
+
 ## Consequences
 
 - 与上游的差异集中在 skill 中的知识路径、上述段落、一个 reference 模板和对应测试锚点；上游涉及
@@ -86,4 +102,5 @@ spec / ADR / 术语）和「只回写仍成立结论」更适合团队，但流�
 - `AGENTS.md` 同时承载行为规则与 `## 项目事实`，两者合计需遵守项目对该文件的长度约束。
 - 团队文档层可被不使用 CodeStable 的成员按 `docs/README.md` 独立维护。
 - 学习契约只有 `cs-keep` 一个 owner；task skill 需要细则时加载 `cs-keep`，多一次按需加载。
+- 与上游的 review 相关改动（reviewer 编排、`cs-review` 本体）不再可合并，需要按本节规则手工取舍。
 - 静态测试只证明契约文本存在；真实模型是否按登记写入、是否附 `Spec impact`，由试点项目的真路径会话验证。

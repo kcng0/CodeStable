@@ -169,14 +169,12 @@ def test_project_learning_does_not_restore_feedback_or_global_runtime_state() ->
     }
     assert active_skills == {
         "cs",
-        "cs-code-review",
         "cs-epic",
         "cs-feat",
         "cs-issue",
         "cs-keep",
         "cs-onboard",
         "cs-refactor",
-        "cs-review",
     }
 
     for path in (

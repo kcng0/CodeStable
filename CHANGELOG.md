@@ -11,7 +11,12 @@
   into `cs-keep` ("task skill 的候选门槛"); task skills keep a short pointer and the authorization gate.
 - `cs-feat` / `cs-issue` prefer a project verification skill for real-entry checks; feat / issue / refactor
   closings add a `Spec impact` line; `cs-epic` closing checks registered Vision for candidates.
-- `cs-onboard` and `cs-code-review` set `disable-model-invocation: true`.
+- `cs-onboard` sets `disable-model-invocation: true`.
+- Removed `cs-review` and the `cs-code-review` alias (7 skills ship). Task skills replace the review
+  protocol with an `独立验收` section: the author self-verifies on the real path; independent-context
+  acceptance runs only on schema/data migration, authorization, billing, concurrency/idempotency, or
+  incompatible external API changes, or on user request, for at most two rounds. The risk table no longer
+  adds independent review; Epic design and contract changes need owner confirmation only.
 
 - Added complete Codex plugin publisher and interface metadata, with package checks that prevent
   future manifests from passing without the fields required by generic plugin validation.

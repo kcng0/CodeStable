@@ -17,7 +17,6 @@ CLI_COMMAND = os.environ.get("CODESTABLE_SKILLS_CLI")
 LEGACY_INVENTORY = ROOT / "tests/fixtures/skills-cli/legacy-cs-inventory.json"
 V2_SKILLS = {
     "cs",
-    "cs-review",
     "cs-epic",
     "cs-feat",
     "cs-issue",
@@ -26,8 +25,8 @@ V2_SKILLS = {
     "cs-refactor",
 }
 
-# 发布契约显式交付的唯一兼容别名（v1 沿用名 -> v2 新名）；随包安装但不算独立能力。
-SHIM_SKILLS = {"cs-code-review"}
+# 本 fork 不交付兼容别名；保留常量以便集合表达式不变。
+SHIM_SKILLS: set[str] = set()
 SKILLS_CLI_1_5_17_PRIORITY_PREFIXES = (
     "",
     "skills/",
@@ -175,9 +174,9 @@ def test_v1_package_discovery_identifies_exact_retired_set() -> None:
     deleted_from_package = skills_cli_1_5_17_deleted_skills(locked_paths, package_discovery)
 
     assert current_names == V2_SKILLS | SHIM_SKILLS
-    assert current_names - {"cs-review"} <= legacy_names
+    assert current_names <= legacy_names
     assert len(legacy_names) == 32
-    assert len(retired_names) == 24
+    assert len(retired_names) == 25
     assert deleted_from_root == legacy_names
     assert deleted_from_package == retired_names
 

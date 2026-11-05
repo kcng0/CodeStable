@@ -41,7 +41,7 @@ Task type determines the engineering method; actual risk determines assurance st
 Execution flow = minimum complete loop + the least assurance required by each unexcluded risk
 ```
 
-Independent review is not a default step. Each risk adds only the assurance directly required by that risk.
+Independent acceptance is not a default step. Each risk adds only the assurance directly required by that risk.
 
 Context should be thick but loaded only when needed. The current task retrieves project facts, adjacent implementation, historical lessons, and engineering guidance by keyword and situation instead of preloading a manual into every session.
 
@@ -49,7 +49,7 @@ Context should be thick but loaded only when needed. The current task retrieves 
 
 Human involvement should not mean repeatedly clicking “continue.” Explicit actions should execute directly, and ordinary steps should advance without ceremony.
 
-The owner is needed when a product contract changes, a major risk is accepted, a hard-to-reverse choice is made, or the whole delivery is accepted. Verification, independent review, and owner gates should all be proportionate to risk.
+The owner is needed when a product contract changes, a major risk is accepted, a hard-to-reverse choice is made, or the whole delivery is accepted. Verification, independent acceptance, and owner gates should all be proportionate to risk.
 
 This division makes AI an efficient executor while preserving the programmer's responsibility for software that remains observable, controllable, and evolvable.
 

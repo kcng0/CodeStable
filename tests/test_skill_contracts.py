@@ -21,7 +21,7 @@ MINIMUM_SUFFICIENT_ASSURANCE_CONTRACT = (
     "不得以“没有注意到风险”作为降级依据",
     "风险事实 → 增加的保障",
     "一个风险只增加与它直接对应的保障",
-    "不自动启用整套 design、全量回归、独立 review、work 文档或 Epic final acceptance 路径",
+    "不自动启用整套 design、全量回归、独立验收、work 文档或 Epic 最终验收路径",
     "行数、文件数、文案/代码类型和 task kind 都不是风险的替代指标",
     "流程太重 / 只是小改动 / 文档比代码多",
     "不是无条件跳过安全门槛",
@@ -101,62 +101,36 @@ THIN_SKILL_SAFETY_INVARIANTS = {
         "讨论只存在于当前会话",
         "不创建 `.codestable/work/discussion-*`",
     ),
-    "cs-review": (
-        "只读",
-        "叶子执行器",
-        "禁止创建、委派或唤醒任何子 agent",
-        "不得再次调用 `cs-review`",
-        "不保存复审轮次",
-        "blocking 未解决",
-    ),
-    "cs-code-review": (
-        "兼容别名",
-        "canonical entry `cs-review`",
-        "不得读取 sibling skill 文件",
-    ),
     "cs-epic": (
         "拆解方案必须经用户确认",
-        "由当前主流程创建一个 fresh reviewer",
-        "本轮失败且不计轮次",
-        "不得盲目重发",
+        "拿不准时不派",
+        "最多 2 轮",
         "不代替用户做整体验收",
     ),
     "cs-feat": (
         "不得代替用户确认设计",
-        "由当前主流程创建一个 fresh reviewer",
-        "本轮失败且不计轮次",
-        "不得盲目重发",
+        "拿不准是否命中时不派",
+        "最多 2 轮",
         "与声明相称的可核验证据",
     ),
     "cs-issue": (
         "能明确变红的验证",
         "变红的验证必须变绿",
-        "由当前主流程创建一个 fresh reviewer",
-        "本轮失败且不计轮次",
-        "不得盲目重发",
+        "拿不准是否命中时不派",
+        "最多 2 轮",
     ),
     "cs-keep": ("没有可追溯证据不写", "`.codestable/compound/` 是只读历史知识源"),
     "cs-onboard": ("存量文件一律不动", "不复制"),
     "cs-refactor": (
         "行为等价",
         "先有能自证等价的验证",
-        "由当前主流程创建一个 fresh reviewer",
-        "本轮失败且不计轮次",
-        "不得盲目重发",
+        "拿不准是否命中时不派",
+        "最多 2 轮",
     ),
 }
 
 THIN_SKILL_FORBIDDEN_TEXT = {
     "cs": ("L0-L4",),
-    "cs-review": (
-        "git push",
-        "read all references",
-        "用独立 subagent reviewer",
-        "派发 reviewer 时",
-        "探测全部已配置的审查 agent/model",
-        "累计最多 3 轮",
-    ),
-    "cs-code-review": ("按 `cs-review` 的 SKILL.md 执行",),
     "cs-epic": ("ConfirmGoalCommitAuthorization", "git push", "read all references"),
     "cs-feat": ("git push", "read all references"),
     "cs-issue": ("git push", "read all references"),
@@ -167,7 +141,7 @@ ISSUE_DIAGNOSIS_CONTRACT = (
     "用户只要求定位、分析、解释或排查时，执行只诊断",
     "诊断结论不扩大为修复授权",
     "不改产品代码、测试或配置，不创建 commit",
-    "diagnose 不新增审查阶段",
+    "无产品 diff 时不触发独立验收",
     "`已证实根因` / `可证伪假设` / `证据不足`",
     "至少实际运行一次",
     "可再次执行的命令及红色输出",
@@ -233,17 +207,10 @@ def test_thin_skills_keep_explicit_safety_invariants() -> None:
         for forbidden in forbidden_texts:
             assert forbidden not in body, f"{skill_name}: forbidden {forbidden!r}"
 
-    review_openai = yaml.safe_load(
-        (SKILLS / "cs-review/agents/openai.yaml").read_text(encoding="utf-8")
-    )
-    review_frontmatter, _ = _read_skill(SKILLS / "cs-review/SKILL.md")
-    review_prompt = review_openai["interface"]["default_prompt"]
-    assert str(review_frontmatter["description"]).startswith("只读审查叶子执行器")
-    assert "$cs-review" in review_prompt
-    assert "不创建任何子 agent" in review_prompt
-    assert "独立" not in review_openai["interface"]["short_description"]
-    assert "独立" not in review_prompt
-    assert "派发独立 subagent reviewer" not in review_prompt
+    for skill_name in TASK_SKILLS:
+        _, body = _read_skill(SKILLS / skill_name / "SKILL.md")
+        assert "reviewer" not in body, skill_name
+        assert "cs-review" not in body, skill_name
 
 
 def test_cs_issue_owns_diagnosis_and_authorized_fix_modes() -> None:
@@ -314,19 +281,19 @@ def test_confirmed_cs_handoff_avoids_duplicate_intake_without_expanding_authorit
             "缺少会改变方向的事实",
             "超出已确认边界",
             "不扩大实现、commit、发布或写入授权",
-            "不替代本 skill 的 review、验证与确认门槛",
+            "不替代本 skill 的验证、验收与确认门槛",
         ):
             assert anchor in owner, skill_name
 
     _, epic = _read_skill(SKILLS / "cs-epic/SKILL.md")
     assert "handoff 只用于起草 proposed 永久 Epic 文档" in epic
-    assert "不替代 fresh design review、批准 hash 或第一道 owner gate" in epic
+    assert "不替代批准 hash 或第一道 owner gate" in epic
 
     _, refactor = _read_skill(SKILLS / "cs-refactor/SKILL.md")
     assert "同一会话由 `cs` 交入且带已确认 handoff" not in refactor
 
 
-def test_shared_language_contract_is_published_across_discussion_feature_epic_and_review() -> None:
+def test_shared_language_contract_is_published_across_discussion_feature_and_epic() -> None:
     _, cs = _read_skill(SKILLS / "cs/SKILL.md")
     _, feat = _read_skill(SKILLS / "cs-feat/SKILL.md")
     feat_language = (SKILLS / "cs-feat/references/shared-language.md").read_text(
@@ -339,7 +306,6 @@ def test_shared_language_contract_is_published_across_discussion_feature_epic_an
     wayfinding = (SKILLS / "cs-epic/references/wayfinding.md").read_text(
         encoding="utf-8"
     )
-    _, review = _read_skill(SKILLS / "cs-review/SKILL.md")
 
     assert "共享语言只在歧义会改变目标、行为、归属、契约或验收时收敛" in cs
     assert "已有单义术语不增加提问或产物" in cs
@@ -377,15 +343,6 @@ def test_shared_language_contract_is_published_across_discussion_feature_epic_an
         assert _contains_contract(epic_language, anchor), anchor
     assert "术语歧义" in wayfinding
     assert "会改变路线的术语已经单义化" in wayfinding
-
-    for anchor in (
-        "design / contract review",
-        "先定义后使用",
-        "同一术语全文同义",
-        "不能替 owner 证明理解",
-        "已有单义术语或纯实现细节不要求新增 glossary",
-    ):
-        assert _contains_contract(review, anchor), anchor
 
 
 def test_task_skills_retrieve_legacy_knowledge_read_only() -> None:
@@ -601,100 +558,6 @@ def test_requirements_only_follow_an_explicit_canonical_owner() -> None:
         assert "不存在时不新建 `.codestable/requirements/`" in body, skill_name
 
 
-def test_review_delegation_discovers_subagent_management_then_selects() -> None:
-    for skill_name in ("cs-feat", "cs-issue", "cs-refactor", "cs-epic"):
-        _, caller = _read_skill(SKILLS / skill_name / "SKILL.md")
-        assert "当前主流程创建 reviewer 前" in caller, skill_name
-        assert "当前会话可调用的 subagent 创建与管理能力" in caller, skill_name
-        assert "项目上下文有显式创建方式/model 约束时先遵守" in caller, skill_name
-        assert "达到审查质量基线后" in caller, skill_name
-        assert "优先选择与实现者异构的 agent" in caller, skill_name
-        assert "受管理的结构化委派能力" in caller, skill_name
-        assert "宿主 subagent" in caller, skill_name
-        assert "本机有界 agent CLI 回退" in caller, skill_name
-        assert "不得只扫 PATH" in caller, skill_name
-        assert "显式指定最强稳定 `model`" in caller, skill_name
-        assert "禁止依赖默认模型" in caller, skill_name
-        assert "最终创建方式、agent/model 与回退原因写入 task packet" in caller, skill_name
-        assert "通道" not in caller, skill_name
-        anchors = (
-            "当前主流程创建 reviewer 前",
-            "当前会话可调用的 subagent 创建与管理能力",
-            "项目上下文有显式创建方式/model 约束时先遵守",
-            "达到审查质量基线后",
-            "优先选择与实现者异构的 agent",
-            "受管理的结构化委派能力",
-            "宿主 subagent",
-            "本机有界 agent CLI 回退",
-            "最终创建方式、agent/model 与回退原因写入 task packet",
-        )
-        positions = [caller.index(anchor) for anchor in anchors]
-        assert positions == sorted(positions), skill_name
-
-
-def test_review_delegation_keeps_a_healthy_run_bound() -> None:
-    for skill_name in ("cs-feat", "cs-issue", "cs-refactor", "cs-epic"):
-        _, caller = _read_skill(SKILLS / skill_name / "SKILL.md")
-        assert "reviewer 创建后绑定该运行" in caller, skill_name
-        assert "状态健康时等待终态报告" in caller, skill_name
-        assert "`Awaiting` 携带可查询的同一 run identity" in caller, skill_name
-        assert "后来发现更优创建方式" in caller, skill_name
-        assert "取消、重复创建或并行补发" in caller, skill_name
-        assert "能力不满足或目标失效" in caller, skill_name
-
-
-def test_review_reuses_one_reviewer_lineage_for_finding_driven_repairs() -> None:
-    lineage_contract = (
-        "每个独立审查阶段的首轮必须由当前主流程创建一个 fresh reviewer",
-        "一个独立审查阶段由单一审查目的界定",
-        "design review、change review、contract review 与 Epic final acceptance 是不同阶段",
-        "只有为本阶段 findings 所作修复的复审",
-        "先修复并重跑验证，再冻结新的完整审查目标",
-        "同一 reviewer 的同一 session",
-        "完整当前候选与本轮修复增量",
-        "`resolved` / `unresolved` / `new findings`",
-        "不得只核对旧 finding 或机械打勾",
-        "累计最多 3 个有终态报告的轮次",
-        "更换 reviewer 不重置计数",
-        "只有原 run/session 失败或不可恢复、能力不满足、目标、范围、设计或核心路径发生重大变化",
-        "reviewer 声明无法继续独立判断",
-        "owner 要求第二意见",
-        "独立于实现者，不要求对自身上一轮审查失忆",
-    )
-
-    for skill_name in ("cs-feat", "cs-issue", "cs-refactor", "cs-epic"):
-        _, caller = _read_skill(SKILLS / skill_name / "SKILL.md")
-        for anchor in lineage_contract:
-            assert _contains_contract(caller, anchor), f"{skill_name}: missing {anchor!r}"
-        assert "处理后重跑验证、重新冻结审查目标并创建 fresh reviewer" not in caller
-        assert "需要复审时重新创建 reviewer" not in caller
-        assert "按需重新创建 reviewer" not in caller
-        assert "需要时重新创建 reviewer" not in caller
-        assert "按需重新发起" not in caller
-
-    trigger_contract = {
-        "cs-epic": "交确认前进入 design review 审查阶段",
-    }
-    for skill_name, anchor in trigger_contract.items():
-        _, caller = _read_skill(SKILLS / skill_name / "SKILL.md")
-        assert _contains_contract(caller, anchor), skill_name
-
-    _, review = _read_skill(SKILLS / "cs-review/SKILL.md")
-    for anchor in (
-        "首轮 task packet 传入单一审查目的",
-        "design review、change review、contract review 与 Epic final acceptance 使用不同阶段",
-        "同一 reviewer 的同一 session",
-        "完整当前候选与本轮修复增量",
-        "`resolved` / `unresolved` / `new findings`",
-        "独立于实现者，不要求对自身上一轮审查失忆",
-    ):
-        assert anchor in review
-    assert "不修复、不自行发起复审" in review
-    assert "可承接来源流程发给同一 session 的 follow-up" in review
-    assert "目标变化则本轮失效，由调用方重新冻结后创建 fresh reviewer" not in review
-    assert "在进入本 skill 前完成 reviewer 创建方式与 agent/model 选择并创建 fresh reviewer" not in review
-
-
 def test_ordinary_task_skills_publish_minimum_sufficient_assurance() -> None:
     for skill_name in ORDINARY_TASK_SKILLS:
         _, skill = _read_skill(SKILLS / skill_name / "SKILL.md")
@@ -704,33 +567,49 @@ def test_ordinary_task_skills_publish_minimum_sufficient_assurance() -> None:
             )
 
 
-def test_ordinary_change_review_is_risk_triggered_not_default() -> None:
-    forbidden_shortcuts = (
-        "默认进入 change review",
-        "仅文案级微小改动",
-        "仅单行级微小修复",
-        "仅微小整理",
-    )
-    review_contract = (
-        "独立 change review 不再默认发生",
-        "权限、安全、隐私或其他信任边界",
-        "持久化数据、schema 或迁移路径",
-        "并发、顺序或一致性语义",
-        "不可恢复的代码外副作用",
-        "review 实际触发后才应用 `审查协议` 中的 reviewer 创建、目标冻结、lineage、findings 与轮次条款",
-        "以下 reviewer 创建、目标冻结、lineage、findings 与轮次条款仅在 review 被触发后生效",
-        "commit / 里程碑授权门槛始终生效",
-    )
+ACCEPTANCE_HARD_CONDITIONS = (
+    "schema 或数据迁移",
+    "鉴权/权限判定",
+    "计费/金额计算",
+    "并发/锁/幂等逻辑",
+    "对外 API 不兼容变更",
+)
+
+
+def test_independent_acceptance_follows_hard_conditions_not_risk_guesses() -> None:
+    for skill_name in TASK_SKILLS:
+        _, skill = _read_skill(SKILLS / skill_name / "SKILL.md")
+        for anchor in ACCEPTANCE_HARD_CONDITIONS:
+            assert anchor in skill, (skill_name, anchor)
+        for anchor in (
+            "按项目或宿主已有的委派方式派独立上下文",
+            "业务正确性措辞",
+            "最多 2 轮",
+            "项目或用户另有验收规则时以该规则为准",
+        ):
+            assert _contains_contract(skill, anchor), (skill_name, anchor)
+        # 拿不准时不派：不能被通用的「不能排除时先按风险存在处理」反向拉高。
+        assert "拿不准" in skill and "不派" in skill, skill_name
 
     for skill_name in ORDINARY_TASK_SKILLS:
         _, skill = _read_skill(SKILLS / skill_name / "SKILL.md")
-        for shortcut in forbidden_shortcuts:
-            assert shortcut not in skill, f"{skill_name}: keeps shortcut {shortcut!r}"
-        for anchor in review_contract:
-            assert _contains_contract(skill, anchor), (
-                f"{skill_name}: missing risk-triggered review contract {anchor!r}"
-            )
+        assert "默认由作者在真路径上自验" in skill, skill_name
+        assert "独立验收只按 `独立验收` 的硬条件或用户要求触发" in skill, skill_name
+        assert "独立 review" not in skill, skill_name
 
+
+def test_commit_gates_survive_without_review_machinery() -> None:
+    for skill_name in TASK_SKILLS:
+        _, caller = _read_skill(SKILLS / skill_name / "SKILL.md")
+        assert _contains_contract(caller, "正式里程碑 commit"), skill_name
+        assert _contains_contract(caller, "WIP/checkpoint commit"), skill_name
+        assert _contains_contract(caller, "它不代表任务完成"), skill_name
+        assert _contains_contract(caller, "未获授权则只报告可提交状态，不自行提交"), skill_name
+
+    _, epic = _read_skill(SKILLS / "cs-epic/SKILL.md")
+    assert "同一时间只允许一个 `current_item`" in epic
+    assert "不把多个子项堆进同一 diff" in epic
+    assert "milestone_commit" in epic
 
 def test_ordinary_task_skills_add_only_corresponding_assurance() -> None:
     risk_mapping = (
@@ -751,7 +630,7 @@ def test_ordinary_task_skills_add_only_corresponding_assurance() -> None:
         "连续性需要不是风险门槛",
         "只增加单一临时 work 游标",
         "成本最低且足够权威的验证",
-        "已有定向测试足够时不叠加全量套件、浏览器 smoke 与独立 review",
+        "已有定向测试足够时不叠加全量套件、浏览器 smoke 与独立验收",
     )
 
     for skill_name in ORDINARY_TASK_SKILLS:
@@ -780,7 +659,7 @@ def test_ordinary_task_skills_add_only_corresponding_assurance() -> None:
         "全部改动完成后始终执行上述受影响回归",
     )
     assert "## 验证范围" in refactor
-    assert "## 审查协议" in refactor
+    assert "## 独立验收" in refactor
 
 
 def test_minimum_assurance_preserves_task_specific_safety_contracts() -> None:
@@ -805,24 +684,6 @@ def test_minimum_assurance_preserves_task_specific_safety_contracts() -> None:
             assert _contains_contract(skill, anchor), (skill_name, anchor)
 
 
-def test_design_review_accepts_file_or_frozen_packet_text() -> None:
-    target_contract = (
-        "仓库内已有 design 文档版本",
-        "task packet 内原样全文 + SHA-256",
-        "reviewer 审查的目标就是该文本",
-        "最新全文、前后 hash 与修复摘要",
-    )
-    for skill_name in (*TASK_SKILLS, "cs-review"):
-        _, skill = _read_skill(SKILLS / skill_name / "SKILL.md")
-        for anchor in target_contract:
-            assert _contains_contract(skill, anchor), (
-                f"{skill_name}: missing packet design target contract {anchor!r}"
-            )
-
-    _, epic = _read_skill(SKILLS / "cs-epic/SKILL.md")
-    assert "Epic design review 优先冻结永久文档版本" in epic
-
-
 def test_cs_routes_owner_without_preselecting_assurance_strength() -> None:
     _, cs = _read_skill(SKILLS / "cs/SKILL.md")
     for anchor in (
@@ -839,16 +700,6 @@ def test_cs_routes_owner_without_preselecting_assurance_strength() -> None:
     assert "子项通过其 owning skill 的验证与审查后" not in epic
 
 
-def test_epic_final_acceptance_starts_a_separate_fresh_reviewer_lineage() -> None:
-    _, epic = _read_skill(SKILLS / "cs-epic/SKILL.md")
-    assert "final acceptance 是独立审查阶段" in epic
-    assert "另建 fresh reviewer" in epic
-    assert "不得沿用子项、此前 design review 或 contract review 的 reviewer lineage" in epic
-    assert "主流程按同一 lineage 处理该阶段 findings" in epic
-    assert "契约变化形成新的 contract review 审查阶段" in epic
-    assert "永久文档已批准后的执行中" in epic
-
-
 def test_shipped_skills_do_not_bind_review_backend_products() -> None:
     forbidden = (
         "cs-agent-mcp",
@@ -863,7 +714,7 @@ def test_shipped_skills_do_not_bind_review_backend_products() -> None:
     paths = [path for path in sorted(SKILLS.rglob("*")) if path.is_file()]
     assert paths
     # Host registration filenames are packaging surfaces, not runtime backend selection.
-    allowed_product_named_paths = {Path("cs-review/agents/openai.yaml")}
+    allowed_product_named_paths: set[Path] = set()
     product_named_paths = {
         path.relative_to(SKILLS)
         for path in paths
@@ -879,33 +730,6 @@ def test_shipped_skills_do_not_bind_review_backend_products() -> None:
             assert product_name not in text, f"{path}: bound to {product_name!r}"
 
 
-def test_review_snapshots_and_milestone_commits_are_not_conflated() -> None:
-    _, review = _read_skill(SKILLS / "cs-review/SKILL.md")
-    assert "冻结一个明确的审查目标" in review
-    assert "审查目标标识" in review
-    assert "reviewer 返回前不得移动该目标" in review
-    assert "diff review 优先 staged diff" in review
-    assert "design review 冻结对应文档版本" in review
-    assert "audit 冻结 commit + 范围标识" in review
-
-    for skill_name in ("cs-feat", "cs-issue", "cs-refactor", "cs-epic"):
-        _, caller = _read_skill(SKILLS / skill_name / "SKILL.md")
-        assert "diff review 优先 staged diff" in caller, skill_name
-        assert "design review 冻结对应文档版本" in caller, skill_name
-        assert "audit 冻结 commit + 范围标识" in caller, skill_name
-        assert "目标标识写入 task packet" in caller, skill_name
-        assert "重新冻结完整审查目标" in caller, skill_name
-        assert "有 blocking 或未被用户明确接受的 important 时不提交当前候选" in caller, skill_name
-        assert "正式里程碑 commit" in caller, skill_name
-        assert "WIP/checkpoint commit" in caller, skill_name
-        assert "不代表 review 通过" in caller, skill_name
-
-    _, epic = _read_skill(SKILLS / "cs-epic/SKILL.md")
-    assert "同一时间只允许一个 `current_item`" in epic
-    assert "不把多个子项堆进同一 diff" in epic
-    assert "milestone_commit" in epic
-
-
 def test_epic_continues_without_a_per_item_owner_gate() -> None:
     _, epic = _read_skill(SKILLS / "cs-epic/SKILL.md")
     for anchor in (
@@ -916,13 +740,13 @@ def test_epic_continues_without_a_per_item_owner_gate() -> None:
         "不得把普通子项完成当作终态返回",
         "拆解确认本身不等于版本控制授权",
         "按已记录的逐项 checkpoint 策略暂停",
-        "需要 owner 明确接受的 important findings",
+        "独立验收超过 2 轮仍有未决反例",
         "子项 owning skill 自身的确认门槛",
         "进入 executing 前不得保留 `pending` 或非法组合",
         "恢复后沿用游标策略，不重新询问是否继续",
         "旧游标缺字段或组合非法时暂停一次补记/修正",
         "每个语义原子 commit 后按项目、宿主或 owner 已确定的 branch/remote 策略发布",
-        "在集成验证与 final acceptance review 通过后、请求 owner 最终接受前发布一次",
+        "在集成验证（及触发的独立验收）通过后、请求 owner 最终接受前发布一次",
         "agent 不执行远端发布",
         "发布失败时写入 `blocked_by` 并暂停",
         "Epic 内的已有 commit 授权只指 `milestone_commit: authorized`",
@@ -966,11 +790,11 @@ def test_epic_parallel_progression_is_policy_gated_with_single_writer() -> None:
         "集成按完成顺序串行",
         "不把多个子项堆进同一 diff",
         "正式里程碑 commit 只由主流程创建",
-        "reviewer 是叶子执行器，不得再创建子 agent",
+        "仅被授权按其 owning skill 的 `独立验收` 派发验收",
         "worker 不得派发其他执行 agent",
         "worktree/branch 策略归宿主",
         "`milestone_commit: authorized`",
-        "不得只扫 PATH",
+        "按项目或宿主已有的委派方式创建",
         "最强稳定 model",
         "不为 worker 追求异构",
         "禁止依赖默认模型",
@@ -1070,7 +894,7 @@ def test_epic_wayfinding_publishes_route_map_frontier_and_hitl_contract() -> Non
         "未验证输入",
         "不能再改变目标、范围、非目标、验收、子项边界、依赖或重大风险",
         "完整 proposed Epic",
-        "现有 design review",
+        "交 owner 执行现有第一道确认",
     ):
         assert _contains_contract(wayfinding, anchor), anchor
 
@@ -1130,9 +954,9 @@ def test_epic_internalizes_goal_semantics_without_v1_runtime() -> None:
     _, epic = _read_skill(SKILLS / "cs-epic/SKILL.md")
     assert "拆解方案必须经用户确认" in epic
     assert "目标、边界、验收、子项契约" in epic
-    assert "重新 review 并征得同意" in epic
+    assert "先更新永久文档并重新征得 owner 同意" in epic
     assert "最新 owner 已批准的验收标准" in epic
-    assert "audit/acceptance review" in epic
+    assert "在真路径上运行集成验证" in epic
     assert "owner 最终接受" in epic
     assert "不恢复 `cs-goal` 入口" in epic
     assert "`state.yaml`" in epic

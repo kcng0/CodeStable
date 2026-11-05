@@ -12,7 +12,6 @@ ROOT = Path(__file__).resolve().parents[1]
 
 V2_SKILLS = {
     "cs",
-    "cs-review",
     "cs-epic",
     "cs-feat",
     "cs-issue",
@@ -21,8 +20,8 @@ V2_SKILLS = {
     "cs-refactor",
 }
 
-# 发布契约显式交付的唯一兼容别名（v1 沿用名 -> v2 新名）；不算独立能力。
-SHIM_SKILLS = {"cs-code-review"}
+# 本 fork 不交付兼容别名；保留常量以便集合表达式不变。
+SHIM_SKILLS: set[str] = set()
 
 CURRENT_CONTRACT_DOCS = (
     "README.md",
@@ -105,15 +104,15 @@ def test_public_docs_present_the_exact_v2_skill_family() -> None:
 
     zh_readme = _read("README.md")
     en_readme = _read("README.en.md")
-    assert "8 个 skill" in zh_readme
-    assert "8 skills" in en_readme
-    assert "cs--skills-8" in zh_readme
-    assert "cs--skills-8" in en_readme
+    assert "7 个 skill" in zh_readme
+    assert "7 skills" in en_readme
+    assert "cs--skills-7" in zh_readme
+    assert "cs--skills-7" in en_readme
     for skill in V2_SKILLS:
         assert f"`{skill}`" in zh_readme
         assert f"`{skill}`" in en_readme
-    assert "已退役，不随 v2 交付" in zh_catalog
-    assert "retired and not shipped in v2" in en_catalog
+    assert "已退役，不随本 fork 交付" in zh_catalog
+    assert "retired and not shipped in this fork" in en_catalog
 
 
 def test_skills_cli_major_upgrade_removes_exactly_the_retired_v1_names() -> None:
@@ -122,7 +121,7 @@ def test_skills_cli_major_upgrade_removes_exactly_the_retired_v1_names() -> None
     )
     retired = set(legacy["skills"]) - V2_SKILLS - SHIM_SKILLS
 
-    assert len(retired) == 24
+    assert len(retired) == 25
     zh = _read("UPGRADE.md")
     en = _read("UPGRADE.en.md")
 
@@ -187,7 +186,7 @@ def test_readme_is_a_compact_first_evaluator_entry() -> None:
         "一个事实，一个 canonical owner",
         "永久 Epic 文档",
         "临时 work 游标",
-        "叶子执行器",
+        "默认作者在真路径上自验",
     ):
         assert anchor in zh
     for anchor in (
@@ -202,7 +201,7 @@ def test_readme_is_a_compact_first_evaluator_entry() -> None:
         "One fact, one canonical owner",
         "permanent Epic document",
         "temporary work cursor",
-        "leaf executor",
+        "The author self-verifies on the real path",
     ):
         assert anchor in en
 
@@ -223,9 +222,9 @@ def test_readme_is_a_compact_first_evaluator_entry() -> None:
         assert "npx skills@latest remove" not in text
 
     assert "[升级指南](./UPGRADE.md#从-v104-升级到-v2)" in zh
-    assert "精确删除 24 个退役入口" in zh
+    assert "精确删除 25 个退役入口" in zh
     assert "[upgrade guide](./UPGRADE.en.md#upgrade-from-v104-to-v2)" in en
-    assert "remove the 24 retired entries" in en
+    assert "remove the 25 retired entries" in en
 
     assert (
         "作者 [@liuzhengdong](https://github.com/liuzhengdong)、"
@@ -327,172 +326,48 @@ def test_authoring_docs_assign_context_and_helpers_to_real_owners() -> None:
     assert "tests/test_skills_cli_distribution.py" in release
 
 
-def test_review_docs_publish_single_level_agent_orchestration() -> None:
-    zh_readme = _read("README.md")
-    en_readme = _read("README.en.md")
+def test_review_docs_publish_hard_condition_acceptance_not_reviewer_orchestration() -> None:
     zh_workflow = _read("WORKFLOW.md")
-    en_workflow = _read("WORKFLOW.en.md")
-    en_workflow_compact = " ".join(en_workflow.split())
-
-    assert "叶子执行器" in zh_readme
-    assert "leaf executor" in en_readme
-    assert "外层主流程创建 reviewer" in zh_workflow
-    assert "outer workflow creates the reviewer" in en_workflow
-    assert "冻结一个明确的审查目标" in zh_workflow
-    assert "当前主流程创建 reviewer 前" in zh_workflow
-    assert "当前会话可调用的 subagent 创建与管理能力" in zh_workflow
-    assert "本机有界 agent CLI 回退" in zh_workflow
-    assert "具体后端与 model 约束属于项目上下文" in zh_workflow
-    assert "健康运行中的 reviewer" in zh_workflow
-    assert "Awaiting 携带同一可查询 run identity" in zh_workflow
-    assert "有 blocking 或未被用户明确接受的 important 时" in zh_workflow
-    assert "freeze an explicit review target" in en_workflow_compact
-    assert "discovers the subagent creation and management capabilities callable in the current session" in en_workflow_compact
-    assert "A bounded local agent CLI is only a fallback" in en_workflow_compact
-    assert "Exact backend and model constraints belong to project context" in en_workflow_compact
-    assert "When no qualified heterogeneous candidate exists" in en_workflow_compact
-    assert "never rely on a default model" in en_workflow_compact
-    assert "healthy running reviewer" in en_workflow_compact
-    assert "Awaiting carries the same queryable run identity" in en_workflow_compact
-    assert "does not consume a review round" in en_workflow_compact
-    assert "blocking findings or important findings not explicitly accepted by the user" in en_workflow_compact
+    en_workflow = " ".join(_read("WORKFLOW.en.md").split())
 
     for anchor in (
-        "每个独立审查阶段的首轮",
-        "一个独立审查阶段由单一审查目的界定",
-        "design review、change review、contract review 与 Epic final acceptance 是不同阶段",
-        "只有为本阶段 findings 所作修复的复审",
-        "同一 reviewer 的同一 session",
-        "完整当前候选与本轮修复增量",
-        "`resolved` / `unresolved` / `new findings`",
-        "累计最多 3 个有终态报告的轮次",
-        "更换 reviewer 不重置计数",
-        "独立于实现者，不要求对自身上一轮审查失忆",
-        "只有原 run/session 失败或不可恢复、能力不满足、目标、范围、设计或核心路径发生重大变化",
-        "reviewer 声明无法继续独立判断",
-        "owner 要求第二意见",
+        "默认由作者在真路径上自验",
+        "schema 或数据迁移、鉴权/权限判定",
+        "计费/金额计算、并发/锁/幂等逻辑、对外 API 不兼容变更，或用户要求时",
+        "按项目或宿主已有的委派方式",
+        "用业务正确性措辞",
+        "拿不准是否命中时不派",
+        "最多 2 轮",
+        "项目或用户另有验收规则时以该规则为准",
+        "审查与审计交给宿主或项目已有的 review 能力",
+        "永久文档并重新征得 owner 同意",
+        "按同一独立验收规则对整体验收标准找反例",
     ):
         assert _contains_contract(zh_workflow, anchor)
 
     for anchor in (
-        "Each independent review stage starts with one fresh reviewer",
-        "A review stage is defined by one review purpose",
-        "Design review, change review, contract review, and Epic final acceptance are separate stages",
-        "Only re-review driven by fixes for that stage's findings",
-        "the same reviewer's same session",
-        "the complete current candidate and the repair delta",
-        "classifies prior findings as resolved or unresolved",
-        "reports new findings",
-        "at most three completed rounds with terminal reports",
-        "Replacing a reviewer does not reset that count",
-        "independence from the implementer, not amnesia about its own prior review",
-        "original run/session fails or cannot be recovered",
-        "capability is insufficient",
-        "target, scope, design, or core path changes materially",
-        "reviewer says it can no longer judge independently",
-        "owner requests a second opinion",
+        "by default the author self-verifies on the real path",
+        "Only schema or data migration, authentication/authorization decisions, billing/amount calculation",
+        "through the project's or host's existing delegation",
+        "in business-correctness terms",
+        "When unsure whether a condition applies, do not dispatch",
+        "for at most two rounds",
+        "Project or user acceptance rules take precedence",
+        "review and audit belong to the host's or project's review capability",
+        "first update the permanent document and require owner reconfirmation",
+        "the same acceptance rule looks for counterexamples against the overall criteria",
     ):
-        assert anchor in en_workflow_compact
-
-    assert _contains_contract(zh_workflow, "final acceptance 是独立审查阶段")
-    assert _contains_contract(zh_workflow, "另建 fresh reviewer")
-    assert _contains_contract(zh_workflow, "不沿用子项、design review 或 contract review 的 lineage")
-    assert "Final acceptance is a separate review stage" in en_workflow_compact
-    assert "starts a new fresh-reviewer lineage" in en_workflow_compact
-    assert "instead of reusing an item, design-review, or contract-review lineage" in en_workflow_compact
-    assert _contains_contract(zh_workflow, "契约变化形成新的 contract review 审查阶段")
-    assert "contract changes start a separate contract-review stage with a fresh reviewer" in en_workflow_compact
-    assert _contains_contract(zh_workflow, "永久文档已批准后的执行中")
-    assert "During execution, after the permanent document has been approved" in en_workflow_compact
+        assert anchor in en_workflow
 
     public = "\n".join(_read(path) for path in PUBLIC_DOCS)
+    for stale in ("fresh reviewer", "reviewer lineage", "独立 review"):
+        assert stale not in public
+    # 只有升级指南为切换用户点名旧入口，其余公开文档不再出现 `cs-review`。
+    for path in PUBLIC_DOCS:
+        if not path.startswith("UPGRADE"):
+            assert "`cs-review`" not in _read(path)
     assert "独立 subagent 视角" not in public
     assert "independent subagent perspective" not in public
-
-
-def test_cs_session_discussion_and_handoff_contract_is_bilingual() -> None:
-    zh_workflow = " ".join(_read("WORKFLOW.md").split())
-    en_workflow = " ".join(_read("WORKFLOW.en.md").split())
-
-    for anchor in (
-        "明确行动默认优先同轮直转",
-        "用户显式要求先讨论",
-        "讨论只存在于当前会话",
-        "不创建 discussion work 游标",
-        "未收敛讨论不跨会话恢复",
-        "已有执行授权时同轮移交",
-        "不再询问“是否继续”",
-        "handoff 不扩大授权",
-        "原始问答、未决讨论和候选分支不落盘",
-        "三个已确认出口之外",
-    ):
-        assert anchor in zh_workflow
-
-    for anchor in (
-        "Explicit action dispatches in the same turn by default",
-        "the user explicitly asks to discuss first",
-        "repository facts still cannot identify",
-        "would materially change",
-        "Discussion exists only in the current session",
-        "does not create a discussion work cursor",
-        "Unresolved discussion is not recoverable across sessions",
-        "existing execution authorization",
-        "must not ask whether to continue",
-        "The handoff does not expand authorization",
-        "the owning skill's review, verification, or owner gates",
-        "Raw questions, answers, unresolved discussion, and candidate branches are not persisted",
-        "only when it is hard to reverse",
-        "the result of a real trade-off",
-        "When no canonical home exists, ask the owner to choose one",
-        "Outside the three confirmed handoff targets",
-    ):
-        assert anchor in en_workflow
-
-    zh_readme = _read("README.md")
-    en_readme = _read("README.en.md")
-    zh_catalog = _read("SKILL_CATALOG.md")
-    en_catalog = _read("SKILL_CATALOG.en.md")
-    assert "未经明确授权，不会修改代码" in zh_readme
-    assert "先讨论的请求在当前会话收敛后同轮移交" in zh_catalog
-    assert "It will not change code" in en_readme
-    assert "without execution authorization" in en_readme
-    assert "Requests to discuss first converge in the current session and hand off in the same turn" in en_catalog
-    assert "稳定资产由 owning skill 按 canonical 归宿毕业" in zh_catalog
-    assert "stable assets graduate through the owning skill into their canonical homes" in en_catalog
-
-
-def test_issue_diagnosis_and_authorized_fix_contract_is_bilingual() -> None:
-    zh_readme = _read("README.md")
-    en_readme = _read("README.en.md")
-    zh_catalog = _read("SKILL_CATALOG.md")
-    en_catalog = _read("SKILL_CATALOG.en.md")
-    zh_workflow = " ".join(_read("WORKFLOW.md").split())
-    en_workflow = " ".join(_read("WORKFLOW.en.md").split())
-
-    for document in (zh_readme, zh_catalog):
-        assert "诊断问题；获授权后用红到绿证据修复" in document
-    for document in (en_readme, en_catalog):
-        assert "Diagnose problems; once repair is authorized, fix with red-to-green evidence" in document
-
-    for anchor in (
-        "只诊断 / 排查",
-        "获授权修复 bug / 性能回退 / 行为异常",
-        "只要求诊断时保持零产品改动",
-        "已证实根因、可证伪假设或证据不足",
-        "性能回退或异常变慢",
-        "行为等价的主动优化",
-    ):
-        assert anchor in zh_workflow
-
-    for anchor in (
-        "diagnose / investigate",
-        "authorized repair of bug / performance regression / broken behavior",
-        "A diagnosis-only request leaves zero product changes",
-        "confirmed root cause, falsifiable hypothesis, or insufficient evidence",
-        "performance regression or anomalous slowdown",
-        "proactive optimization under behavioral equivalence",
-    ):
-        assert anchor in en_workflow
 
 
 def test_minimum_sufficient_assurance_contract_is_bilingual() -> None:
@@ -502,7 +377,7 @@ def test_minimum_sufficient_assurance_contract_is_bilingual() -> None:
         "需求清楚时",
         "直接开始，并用足够的验证交付结果",
         "遇到具体风险时",
-        "只增加与风险对应的确认、测试或 review",
+        "只增加与风险对应的确认或测试",
         "不自动启用整套流程",
     ):
         assert _contains_contract(zh_readme, anchor)
@@ -510,7 +385,7 @@ def test_minimum_sufficient_assurance_contract_is_bilingual() -> None:
         "When the request is clear",
         "delivers the result with enough verification",
         "When it finds a concrete risk",
-        "only the confirmation, tests, or review needed for that risk",
+        "only the confirmation or tests needed for that risk",
         "does not enable the whole workflow",
     ):
         assert _contains_contract(en_readme, anchor)
@@ -530,7 +405,7 @@ def test_minimum_sufficient_assurance_contract_is_bilingual() -> None:
         for anchor in (
             "执行流程 = 最小闭环 + 每个未排除风险所要求的最少保障",
             "任务类型只决定工程方法，实际风险决定保障强度",
-            "独立 review 不是默认步骤",
+            "独立验收不是默认步骤",
             "一个风险只增加与它直接对应的保障",
         ):
             assert _contains_contract(document, anchor)
@@ -539,7 +414,7 @@ def test_minimum_sufficient_assurance_contract_is_bilingual() -> None:
         for anchor in (
             "Execution flow = minimum complete loop + the least assurance required by each unexcluded risk",
             "Task type determines the engineering method; actual risk determines assurance strength",
-            "Independent review is not a default step",
+            "Independent acceptance is not a default step",
             "Each risk adds only the assurance directly required by that risk",
         ):
             assert anchor in document
@@ -554,7 +429,7 @@ def test_minimum_sufficient_assurance_contract_is_bilingual() -> None:
         assert stale not in public_workflow
 
 
-def test_workflow_publishes_risk_mapping_and_packet_design_targets_bilingually() -> None:
+def test_workflow_publishes_risk_mapping_bilingually() -> None:
     zh = " ".join(_read("WORKFLOW.md").split())
     en = " ".join(_read("WORKFLOW.en.md").split())
 
@@ -562,7 +437,6 @@ def test_workflow_publishes_risk_mapping_and_packet_design_targets_bilingually()
         "一次静默、有界核对",
         "不能排除时先按风险存在处理",
         "不得以“没有注意到风险”作为降级依据",
-        "独立审查 / 审计 -> cs-review",
         "破坏兼容性或改变多消费者依赖的公开契约",
         "改变权限、安全、隐私或其他信任边界",
         "改变持久化数据、schema 或迁移路径",
@@ -573,11 +447,6 @@ def test_workflow_publishes_risk_mapping_and_packet_design_targets_bilingually()
         "流程太重 / 只是小改动 / 文档比代码多",
         "不是无条件跳过安全门槛",
         "连续性需要不是风险门槛",
-        "仓库内已有 design 文档版本",
-        "task packet 内原样全文 + SHA-256",
-        "reviewer 审查的目标就是该文本",
-        "最新全文、前后 hash 与修复摘要",
-        "实际触发 review 时才要求通过审查门槛",
     ):
         assert anchor in zh
 
@@ -585,7 +454,6 @@ def test_workflow_publishes_risk_mapping_and_packet_design_targets_bilingually()
         "one silent, bounded check",
         "If a risk still cannot be ruled out after the least-cost targeted check, treat it as present",
         "not noticing a risk is not a valid reason to lower assurance",
-        "independent review / audit -> cs-review",
         "breaks compatibility or changes a public contract used by multiple consumers",
         "changes authorization, security, privacy, or another trust boundary",
         "changes persisted data, schema, or a migration path",
@@ -596,11 +464,6 @@ def test_workflow_publishes_risk_mapping_and_packet_design_targets_bilingually()
         "flow is too heavy / this is only a small change / documentation exceeds the code",
         "not an unconditional bypass of safety gates",
         "Continuity needs are not risk gates",
-        "an existing repository design document",
-        "verbatim design text + SHA-256 in the task packet",
-        "the reviewer reviews that text as the target",
-        "latest full text, previous and current hashes, and repair summary",
-        "A review gate is required only when review was actually triggered",
     ):
         assert anchor in en
 
@@ -745,7 +608,7 @@ def test_epic_wayfinding_contract_is_bilingual_and_keeps_one_document_owner() ->
         "涉及外部权限或副作用的 prerequisite 仍须另获对应权限或确认",
         "不新增独立 issue、map 或第三套状态",
         "route clear 不是新的 owner gate",
-        "现有 design review",
+        "现有第一道 owner 确认",
         "`current_item` 保持 `null`",
     ):
         assert anchor in zh_workflow
@@ -762,7 +625,7 @@ def test_epic_wayfinding_contract_is_bilingual_and_keeps_one_document_owner() ->
         "a prerequisite involving external authority or side effects still requires separate permission or confirmation",
         "does not add issues, a separate map artifact, or a third state system",
         "Route clear is not a new owner gate",
-        "existing design review",
+        "existing first owner confirmation",
         "`current_item` stays `null`",
     ):
         assert anchor in en_workflow
