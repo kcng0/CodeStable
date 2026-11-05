@@ -420,19 +420,28 @@ def test_task_skills_share_the_complete_lesson_read_repair_contract() -> None:
         assert signature == LESSON_READ_REPAIR_CONTRACT, skill_name
 
 
-def test_task_skills_share_the_bounded_strong_signal_contract() -> None:
-    signatures = {}
+TASK_LEARNING_POINTER = (
+    "任务内只在内存保留最多 3 条候选",
+    "不暂停或询问",
+    "按 `cs-keep` 的「task skill 的候选门槛」执行",
+)
+
+
+def test_task_skills_point_to_the_single_keep_owned_candidate_contract() -> None:
     for skill_name in TASK_SKILLS:
         _, body = _read_skill(SKILLS / skill_name / "SKILL.md")
-        signatures[skill_name] = {
-            anchor
-            for anchor in CRYSTALLIZATION_SIGNAL_CONTRACT
-            if _contains_contract(body, anchor)
-        }
+        for anchor in TASK_LEARNING_POINTER:
+            assert _contains_contract(body, anchor), skill_name
+        # 细则只留在 cs-keep，任务 skill 不再各自复制一份。
+        assert not _contains_contract(body, "网络波动、拼写、泛化口号、活动记录"), skill_name
+        assert not _contains_contract(body, "`observed|validated -> retired`"), skill_name
 
-    assert len({frozenset(signature) for signature in signatures.values()}) == 1
-    for skill_name, signature in signatures.items():
-        assert signature == CRYSTALLIZATION_SIGNAL_CONTRACT, skill_name
+
+def test_keep_owns_the_bounded_strong_signal_contract() -> None:
+    _, keep = _read_skill(SKILLS / "cs-keep/SKILL.md")
+    section = keep[keep.index("## task skill 的候选门槛"):keep.index("## 写入纪律")]
+    for anchor in CRYSTALLIZATION_SIGNAL_CONTRACT - set(TASK_LEARNING_POINTER):
+        assert _contains_contract(section, anchor), anchor
 
 
 def test_crystallization_closing_is_quiet_and_prefers_mechanical_guards() -> None:
@@ -478,21 +487,16 @@ def test_crystallization_closing_is_quiet_and_prefers_mechanical_guards() -> Non
         assert _contains_contract(epic, anchor)
 
 
-def test_task_skills_allow_only_two_narrow_lesson_maintenance_paths() -> None:
-    signatures = {}
+def test_keep_allows_only_two_narrow_lesson_maintenance_paths() -> None:
+    _, keep = _read_skill(SKILLS / "cs-keep/SKILL.md")
+    section = keep[keep.index("## task skill 的候选门槛"):keep.index("## 写入纪律")]
+    for anchor in NARROW_LESSON_MAINTENANCE_CONTRACT:
+        assert _contains_contract(section, anchor), anchor
+
     for skill_name in TASK_SKILLS:
         _, body = _read_skill(SKILLS / skill_name / "SKILL.md")
-        signatures[skill_name] = {
-            anchor
-            for anchor in NARROW_LESSON_MAINTENANCE_CONTRACT
-            if _contains_contract(body, anchor)
-        }
         assert _contains_contract(body, "创建、改写规则/scope、晋升、删除与跨项目反馈仍须")
         assert _contains_contract(body, "随当次代码、证据和游标进入同一语义原子 milestone")
-
-    assert len({frozenset(signature) for signature in signatures.values()}) == 1
-    for skill_name, signature in signatures.items():
-        assert signature == NARROW_LESSON_MAINTENANCE_CONTRACT, skill_name
 
 
 def test_keep_never_writes_v1_compound() -> None:
@@ -570,6 +574,22 @@ def test_onboard_keeps_the_base_skeleton_minimal() -> None:
     assert "按需创建" in onboard
     for path in LEGACY_KNOWLEDGE_DIRS:
         assert f"`{path}`" in onboard
+
+
+def test_team_doc_layer_is_owner_gated_and_registered_in_attention() -> None:
+    frontmatter, onboard = _read_skill(SKILLS / "cs-onboard/SKILL.md")
+    assert frontmatter.get("disable-model-invocation") is True
+    assert (SKILLS / "cs-onboard/references/docs-contract.md").is_file()
+    assert "`references/docs-contract.md`" in onboard
+    assert "## 文档归宿" in onboard
+    # 团队文档层不进基础骨架，只在 owner 同意后按需写入。
+    skeleton = onboard.split("```text", 1)[1].split("```", 1)[0]
+    assert "docs/" not in skeleton
+
+    for skill_name in ("cs-feat", "cs-issue", "cs-refactor"):
+        _, body = _read_skill(SKILLS / skill_name / "SKILL.md")
+        closing = body[body.index("## 收尾"):]
+        assert "Spec impact" in closing, skill_name
 
 
 def test_requirements_only_follow_an_explicit_canonical_owner() -> None:
