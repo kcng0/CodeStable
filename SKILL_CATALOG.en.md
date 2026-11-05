@@ -15,7 +15,7 @@ skill files or a centralized onboard runtime.
 | Epic | `cs-epic` | Decompose, confirm, and advance multiple deliverable items serially and continuously through a permanent Epic doc and temporary work cursor, or concurrently for dependency-independent items under an owner-approved `parallel` policy |
 | Memory | `cs-keep` | Manage evidence-backed project facts, lesson lifecycle, and canonical homes |
 
-Review and audit no longer have a dedicated skill; they belong to the host's or project's review capability. A task skill triggers independent acceptance through the project's or host's existing delegation only on hard conditions such as migrations, authorization, billing, concurrency/idempotency, or incompatible APIs, or on user request.
+Review and audit no longer have a dedicated skill; they belong to the host's or project's review capability. A task skill triggers independent acceptance through the project's or host's existing delegation only on hard conditions such as migrations, authorization, billing, concurrency/idempotency, incompatible APIs, or uncertain impact scope, or on user request.
 
 Discussion exists only in the current session and creates no work cursor or transcript; stable assets graduate through the owning skill into their canonical homes, while unresolved discussion has no cross-session recovery promise.
 

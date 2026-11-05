@@ -15,7 +15,7 @@ runtime。
 | 大需求 | `cs-epic` | 用永久 Epic 文档与临时 work 游标拆解、确认并串行连续推进多个可交付子项；owner 批准 `parallel` 策略时并行推进依赖互不阻塞的子项 |
 | 记忆 | `cs-keep` | 管理有证据的项目事实、lesson 生命周期与 canonical 归宿 |
 
-审查与审计不再有专属 skill，交给宿主或项目已有的 review 能力；独立验收只在迁移、权限、计费、并发/幂等或不兼容 API 等硬条件命中或用户要求时，由 task skill 按项目或宿主已有的委派方式触发。
+审查与审计不再有专属 skill，交给宿主或项目已有的 review 能力；独立验收只在迁移、权限、计费、并发/幂等、不兼容 API 或影响面不确定等硬条件命中或用户要求时，由 task skill 按项目或宿主已有的委派方式触发。
 
 讨论本身只存在于当前会话，不创建 work 游标或 transcript；稳定资产由 owning skill 按 canonical 归宿毕业，未收敛讨论不承诺跨会话恢复。
 

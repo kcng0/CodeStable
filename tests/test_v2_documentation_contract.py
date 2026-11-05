@@ -333,7 +333,7 @@ def test_review_docs_publish_hard_condition_acceptance_not_reviewer_orchestratio
     for anchor in (
         "默认由作者在真路径上自验",
         "schema 或数据迁移、鉴权/权限判定",
-        "计费/金额计算、并发/锁/幂等逻辑、对外 API 不兼容变更，或用户要求时",
+        "计费/金额计算、并发/锁/幂等逻辑、对外 API 不兼容变更、影响面经定向核实仍不确定，或用户要求时",
         "按项目或宿主已有的委派方式",
         "用业务正确性措辞",
         "拿不准是否命中时不派",
@@ -348,6 +348,7 @@ def test_review_docs_publish_hard_condition_acceptance_not_reviewer_orchestratio
     for anchor in (
         "by default the author self-verifies on the real path",
         "Only schema or data migration, authentication/authorization decisions, billing/amount calculation",
+        "an impact scope still uncertain after a targeted check",
         "through the project's or host's existing delegation",
         "in business-correctness terms",
         "When unsure whether a condition applies, do not dispatch",

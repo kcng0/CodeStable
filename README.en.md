@@ -107,7 +107,7 @@ Thin means no permanent state machine or stage-artifact micromanagement, not no 
 
 Feature work gets design and verification proportionate to risk; bug fixes go red to green; refactors establish equivalence first.
 
-The author self-verifies on the real path; independent acceptance runs only on hard conditions (migrations, authorization, billing, concurrency, incompatible APIs) or on request.
+The author self-verifies on the real path; independent acceptance runs only on hard conditions (migrations, authorization, billing, concurrency, incompatible APIs, uncertain impact scope) or on request.
 
 Humans enter for product-contract changes, major risk, and overall acceptance, not every mechanical step.
 

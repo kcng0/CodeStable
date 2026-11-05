@@ -104,7 +104,8 @@ a full suite, browser smoke, or independent acceptance.
   a temporary work cursor. Decomposition, contract changes, and overall acceptance each cross an owner gate.
 - Independent acceptance is separate from risk assurance: by default the author self-verifies on the real
   path. Only schema or data migration, authentication/authorization decisions, billing/amount calculation,
-  concurrency/locking/idempotency logic, an incompatible external API change, or a user request triggers
+  concurrency/locking/idempotency logic, an incompatible external API change, an impact scope still
+  uncertain after a targeted check, or a user request triggers
   independent-context acceptance through the project's or host's existing delegation. The dispatch names the
   working directory, change scope, expected behavior, and real-path entry in business-correctness terms; the
   acceptor looks for counterexamples on the real path, not only in the diff. When unsure whether a condition

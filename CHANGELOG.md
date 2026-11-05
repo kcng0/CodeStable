@@ -15,7 +15,8 @@
 - Removed `cs-review` and the `cs-code-review` alias (7 skills ship). Task skills replace the review
   protocol with an `独立验收` section: the author self-verifies on the real path; independent-context
   acceptance runs only on schema/data migration, authorization, billing, concurrency/idempotency, or
-  incompatible external API changes, or on user request, for at most two rounds. The risk table no longer
+  incompatible external API changes, an impact scope still uncertain after a targeted check, or on user
+  request, for at most two rounds. The risk table no longer
   adds independent review; Epic design and contract changes need owner confirmation only.
 
 - Added complete Codex plugin publisher and interface metadata, with package checks that prevent
