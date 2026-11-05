@@ -14,6 +14,8 @@
 - `cs-feat` / `cs-issue` update the registered current-truth spec in the same diff when behavior changes,
   creating one for just the changed behavior when none covers it; verify notes, tests, and README do not
   count as spec. The template's `Spec impact` values are defined.
+- Task skills flag an owner trade-off that meets the ADR threshold during confirmation and write the ADR
+  in the same diff once chosen.
 - `cs-onboard` sets `disable-model-invocation: true`.
 - Removed `cs-review` and the `cs-code-review` alias (7 skills ship). Task skills replace the review
   protocol with an `独立验收` section: the author self-verifies on the real path; independent-context

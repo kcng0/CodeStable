@@ -549,6 +549,16 @@ def test_team_knowledge_lives_in_agents_md_and_docs_not_codestable() -> None:
         closing = body[body.index("## 收尾"):]
         assert "Spec impact" in closing, skill_name
 
+    # 试点回归：owner 拍板的结构性取舍未提出 ADR 候选。
+    for skill_name in ORDINARY_TASK_SKILLS:
+        _, body = _read_skill(SKILLS / skill_name / "SKILL.md")
+        for anchor in (
+            "在同一确认中标明它将记为\nADR",
+            "列出被否决的方案并同步 index",
+            "不满足三条\n时不写 ADR",
+        ):
+            assert _contains_contract(body, anchor), (skill_name, anchor)
+
     # 试点回归：没有 spec 时写 none、把 verify 说明当 spec 写 updated，两种口径都不允许。
     for skill_name in ("cs-feat", "cs-issue"):
         _, body = _read_skill(SKILLS / skill_name / "SKILL.md")
