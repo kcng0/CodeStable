@@ -8,7 +8,7 @@ skill files or a centralized onboard runtime.
 | Group | Skill | Responsibility |
 |---|---|---|
 | Navigation | `cs` | Clear actions dispatch in the same turn. Requests to discuss first converge in the current session and hand off in the same turn; advice only recommends; the overview writes no files |
-| Onboarding | `cs-onboard` | Create minimal project memory; set up the team doc layer with owner approval; explain a lossless v1 upgrade; user-invoked only |
+| Onboarding | `cs-onboard` | Set up `## 项目事实`, the `docs/README.md` contract, and a minimal skeleton; explain a lossless upgrade; user-invoked only |
 | Feature | `cs-feat` | Implement new capability; scale design confirmation and independent review with risk |
 | Issue | `cs-issue` | Diagnose problems; once repair is authorized, fix with red-to-green evidence |
 | Refactor | `cs-refactor` | Change structure or performance under verifiable behavioral equivalence |
@@ -36,7 +36,7 @@ Independent review is not a default step. Each risk adds only the assurance dire
 
 ## Project Knowledge and Epic Boundary
 
-New projects still precreate only `.codestable/attention.md`, `lessons/`, and `work/`. An Epic reuses an existing project home or creates `.codestable/epics/` only on first need: the permanent doc keeps goals, scope, approved items, decisions, delivery index, and terminal acceptance, while `work/epic-{slug}.md` is only a temporary cursor for the approved revision, execution progress, and `item_progression` / `milestone_commit` / `remote_publish` policies; terminal handling deletes the cursor but retains the permanent archive.
+New projects get only `## 项目事实` in `AGENTS.md`, `docs/README.md`, and `.codestable/work/`; lessons go to `docs/notes/` on first write. An Epic reuses an existing project home or creates `docs/epics/` only on first need: the permanent doc keeps goals, scope, approved items, decisions, delivery index, and terminal acceptance, while `work/epic-{slug}.md` is only a temporary cursor for the approved revision, execution progress, and `item_progression` / `milestone_commit` / `remote_publish` policies; terminal handling deletes the cursor but retains the permanent archive.
 
 When the route is still unclear, the permanent Epic document itself is the route map: decision dependencies derive
 the frontier, the agent resolves facts, and product judgment or real trade-offs enter HITL. Review and execution
@@ -46,7 +46,7 @@ Epics retain three owner gates: the owner confirms decomposition after independe
 
 The nine v1 historical knowledge directories — `roadmap/`, `features/`, `issues/`, `refactors/`, `goals/`, `compound/`, `audits/`, `brainstorms/`, and `feedback/` — are searched and cited read-only by task keywords. Do not generate into, rewrite in place, bulk-migrate, or write back to them.
 
-An existing `.codestable/requirements/` may be maintained only when `.codestable/attention.md` explicitly registers it as the canonical requirement location; otherwise it is read-only, and new projects do not create it by default. `cs-epic` carries forward the useful goal contract, recovery cursor, and acceptance, but does not restore the `cs-goal` runtime, goal package, `state.yaml`, per-iteration reports, or runtime gates.
+An existing `.codestable/requirements/` may be maintained only when `## 项目事实` explicitly registers it as the canonical requirement location; otherwise it is read-only, and new projects do not create it by default. `cs-epic` carries forward the useful goal contract, recovery cursor, and acceptance, but does not restore the `cs-goal` runtime, goal package, `state.yaml`, per-iteration reports, or runtime gates.
 
 ## Retired v1.0.4 Entries
 

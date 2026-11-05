@@ -64,7 +64,7 @@ A shared language follows the same rule. It activates only when terminology ambi
 a Feature converges local semantics, an Epic converges concept relationships, and existing project domain docs keep
 owning stable definitions instead of having every task copy a glossary.
 
-Session-critical facts enter attention, and durable Epic contracts enter permanent Epic documents.
+Session-critical facts enter `## 项目事实` in `AGENTS.md`, and durable Epic contracts enter permanent Epic documents.
 
 A large initiative whose route is still unclear must not masquerade as a complete plan. The permanent Epic document
 itself is the route map: decision dependencies derive the frontier, the agent resolves facts, and only product

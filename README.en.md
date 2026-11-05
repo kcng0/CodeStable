@@ -77,7 +77,7 @@ If the catalog misses the plugin entity, use `npx skills@latest add codestable/C
 
 ### Onboard a Project
 
-Run `/cs-onboard` from the repository root. It creates the minimal project-memory skeleton and, with owner approval, a `docs/README.md` doc contract; it does not take over existing docs, worktree, or branch policy.
+Run `/cs-onboard` from the repository root. It adds a `## 项目事实` section to `AGENTS.md`, writes the `docs/README.md` doc contract and a minimal skeleton, and does not take over existing docs, worktree, or branch policy.
 
 ### Start Working
 
@@ -86,7 +86,7 @@ When you are unsure which entry fits, call `/cs`; you can also call the owning s
 | Skill | Purpose |
 |---|---|
 | `cs` | Route explicit actions, in-session discussion, advice, and system overview |
-| `cs-onboard` | Create the minimal project-memory skeleton; set up the team doc layer with owner approval |
+| `cs-onboard` | Set up the project-facts section, doc contract, and minimal skeleton |
 | `cs-feat` | Implement new capability or change existing behavior |
 | `cs-issue` | Diagnose problems; once repair is authorized, fix with red-to-green evidence |
 | `cs-refactor` | Change structure or performance under equivalence evidence |
@@ -121,16 +121,19 @@ The owning skill returns conclusions to one home; if none exists, it asks the ow
 `/cs-onboard` creates:
 
 ```text
+AGENTS.md          # `## 项目事实`: facts needed every session, at most 25 entries
+CLAUDE.md          # a single line: @AGENTS.md
+docs/
+├── README.md      # doc contract: where each doc type lives and when it is updated
+└── notes/         # lessons awaiting validation, created on first write
 .codestable/
-├── attention.md
-├── lessons/
-└── work/
+└── work/          # active cross-session cursors, removed on completion
 ```
 
-- `attention.md` holds the small set of project facts needed every session, capped at 25 entries.
-- `lessons/` keeps one lesson per file, evolves it through observed / validated / retired, and deduplicates before writing.
-- `work/` exists only for active cross-session work, multi-agent handoff, or an explicitly requested durable record.
-- Team docs (Vision, current-truth spec, ADRs, permanent Epics, glossary) are registered under `## 文档归宿` in `attention.md`; the project's `docs/README.md` defines how they are read and written. Deliveries that change existing behavior add a `Spec impact: none | updated | drift` line.
+- `## 项目事实` holds the small set of project facts needed every session, capped at 25 entries; the host loads it with every session.
+- `docs/notes/` keeps one lesson per file, evolves it through observed / validated / retired, and deduplicates before writing.
+- `.codestable/work/` exists only for active cross-session work, multi-agent handoff, or an explicitly requested durable record.
+- The project's `docs/README.md` defines where team docs (Vision, current-truth spec, ADRs, permanent Epics, glossary) live and how they are maintained. Deliveries that change existing behavior add a `Spec impact: none | updated | drift` line.
 
 CodeStable recognizes crystallization moments while working: it observes silently and shows at most one evidence-backed candidate at ordinary completion.
 
@@ -149,7 +152,7 @@ and executable, existing design review, owner confirmation, and execution begin.
 
 A temporary work cursor keeps only its pointer, approved revision, progress, policies, and evidence.
 
-An Epic reuses an existing Epic, RFC, or initiative home when available and creates `.codestable/epics/` only on demand. The temporary cursor is deleted at completion; the permanent document remains.
+An Epic reuses an existing Epic, RFC, or initiative home when available and creates `docs/epics/` only on demand. The temporary cursor is deleted at completion; the permanent document remains.
 
 See [WORKFLOW.en.md](./WORKFLOW.en.md) for owner gates, recovery, and terminal rules.
 

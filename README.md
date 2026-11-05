@@ -73,7 +73,7 @@ npx skills@latest add codestable/CodeStable/plugins/codestable
 
 ### 接入项目
 
-在仓库根目录运行 `/cs-onboard`。它只创建最小项目记忆骨架；项目还没有团队文档约定时，可在 owner 同意后写入 `docs/README.md` 文档契约。不接管已有文档结构、worktree 或 branch 策略。
+在仓库根目录运行 `/cs-onboard`。它在 `AGENTS.md` 建 `## 项目事实` 段，写入 `docs/README.md` 文档契约与最小骨架；不接管已有文档结构、worktree 或 branch 策略。
 
 ### 开始工作
 
@@ -82,7 +82,7 @@ npx skills@latest add codestable/CodeStable/plugins/codestable
 | Skill | 用途 |
 |---|---|
 | `cs` | 路由明确行动、会话内讨论、咨询与体系导览 |
-| `cs-onboard` | 为仓库创建最小项目记忆骨架；owner 同意后建立团队文档层 |
+| `cs-onboard` | 建立项目事实段、文档契约与最小骨架 |
 | `cs-feat` | 实现新功能或改变既有行为 |
 | `cs-issue` | 诊断问题；获授权后用红到绿证据修复 |
 | `cs-refactor` | 在行为等价证据下调整结构或性能 |
@@ -117,16 +117,19 @@ CodeStable 给强模型写责任，不写逐步脚本。skill 只约束目标、
 `/cs-onboard` 创建：
 
 ```text
+AGENTS.md          # ## 项目事实：每次会话必读，最多 25 条
+CLAUDE.md          # 只有一行 @AGENTS.md
+docs/
+├── README.md      # 文档契约：各类文档的位置与更新约定
+└── notes/         # 待验证经验，首次写入时创建
 .codestable/
-├── attention.md
-├── lessons/
-└── work/
+└── work/          # 活动中的跨会话任务游标，完成即清
 ```
 
-- `attention.md` 保存每次会话都需要的少量项目事实，最多 25 条。
-- `lessons/` 一条经验一个文件，按 observed / validated / retired 演化，并在写入前查重合并。
-- `work/` 只服务活动中的跨会话任务、多人交接或明确要求的持久记录。
-- 团队文档（Vision、当前真相 spec、ADR、永久 Epic、术语）的位置登记在 `attention.md` 的 `## 文档归宿`，读写约定见项目 `docs/README.md`；改变已有行为的交付附一行 `Spec impact: none | updated | drift`。
+- `## 项目事实` 保存每次会话都需要的少量项目事实，最多 25 条；宿主随会话加载，不依赖调用 skill。
+- `docs/notes/` 一条经验一个文件，按 observed / validated / retired 演化，并在写入前查重合并。
+- `.codestable/work/` 只服务活动中的跨会话任务、多人交接或明确要求的持久记录。
+- 团队文档（Vision、当前真相 spec、ADR、永久 Epic、术语）的位置与读写约定以 `docs/README.md` 为准；改变已有行为的交付附一行 `Spec impact: none | updated | drift`。
 
 CodeStable 边做边识别晶化时刻：任务中静默观察，普通收尾最多给一条有证据的候选。
 
@@ -144,7 +147,7 @@ agent 解决事实，真正的产品判断与取舍进入 HITL。路线清晰、
 
 临时 work 游标只保存永久文档指针、批准 revision、执行进度、策略与证据。
 
-Epic 优先沿用项目已有的 Epic、RFC 或 initiative 归宿；没有时才按需创建 `.codestable/epics/`。执行结束后删除临时游标，永久文档保留。
+Epic 优先沿用项目已有的 Epic、RFC 或 initiative 归宿；没有时才按需创建 `docs/epics/`。执行结束后删除临时游标，永久文档保留。
 
 完整 owner gate、恢复与终态规则见 [WORKFLOW.md](./WORKFLOW.md)。
 

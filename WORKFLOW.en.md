@@ -38,7 +38,7 @@ lessons and memory    -> cs-keep
 - Raw questions, answers, unresolved discussion, and candidate branches are not persisted. Stable terms graduate
   to the project's existing canonical terminology home. A structural choice becomes an ADR only when it is hard
   to reverse, surprising without context, and the result of a real trade-off. The owning skill graduates task
-  contracts, permanent Epics, attention, and lessons under existing rules; no parallel truth is invented. When no
+  contracts, permanent Epics, `## 项目事实`, and `docs/notes/` under existing rules; no parallel truth is invented. When no
   canonical home exists, ask the owner to choose one.
 - Outside the three confirmed handoff targets, outcomes use `cs`'s existing Execute / Advise rules and receive no
   duplicate-confirmation privilege. When only discussion is authorized, `cs` returns the confirmed conclusions
@@ -150,7 +150,7 @@ a full suite, browser smoke, or independent review.
   dispatch. Only terminal failure without a report, an unrecoverable run identity, a capability mismatch,
   or target invalidation fails the delegation; it does not consume a review round. The outer workflow diagnoses
   before a bounded retry, creation-method switch, or escalation; it never blindly resends the task.
-- `cs-keep` compresses frequently needed facts into attention, stages experience without a stronger owner as
+- `cs-keep` compresses frequently needed facts into `## 项目事实` in `AGENTS.md`, stages experience without a stronger owner as
   lessons, and graduates it to mechanical guards, project docs, or ADRs.
 
 Ordinary work creates no stage artifacts. The diff, test output, and delivery report are the evidence.
@@ -210,8 +210,8 @@ When the route is still unclear during `proposed + planning`, `cs-epic` performs
   and assurance.
 
 - The **permanent Epic document** reuses an existing Epic, RFC, or initiative home when the project
-  has one. Otherwise, create `.codestable/epics/{slug}.md` on demand for the first Epic;
-  `cs-onboard` does not precreate `.codestable/epics/`. This document alone owns the starting point,
+  has one. Otherwise, create `docs/epics/{slug}.md` on demand for the first Epic;
+  `cs-onboard` does not precreate `docs/epics/`. This document alone owns the starting point,
   goals, scope, non-goals, acceptance criteria, approved items with stable IDs/dependencies/acceptance
   points, key decisions, final delivery index, overall acceptance, residual risks, and durable `status`.
 - The **temporary execution cursor** at `.codestable/work/epic-{slug}.md` stores only the permanent
@@ -266,16 +266,16 @@ entry, goal package, `state.yaml`, per-iteration reports, or legacy runtime gate
 `/cs-onboard` creates this minimal skeleton for a new project:
 
 ```text
-.codestable/
-├── attention.md    # a small set of facts needed every session, at most 25 entries
-├── lessons/        # one Markdown file per reusable lesson, searched by keyword
-└── work/           # active cross-session work, filenames carry a type prefix feat-/issue-/refactor-/epic-, removed on completion
+AGENTS.md          # `## 项目事实`: facts needed every session, at most 25 entries
+CLAUDE.md          # a single line: @AGENTS.md
+docs/README.md     # doc contract: where each doc type lives and when it is updated
+docs/notes/        # lessons awaiting validation, created on first write
+.codestable/work/  # active cross-session cursors, removed on completion
 ```
 
-Skill-specific context and helpers belong to the owning skill's `references/` and `scripts/`.
-Project facts belong in the structure above, an on-demand permanent Epic home, or the project's existing
-docs and ADRs. A skill does not read sibling skill files or depend on a centralized onboard runtime.
-Worktree, branch, and agent backend policy remain host- or owner-controlled The owner-approved team doc layer (`docs/README.md`, `## 文档归宿` in attention) is not part of the base skeleton.
+Skill helpers live in the owning skill's `references/` and `scripts/`; project facts live in the structure
+above, whose `docs/README.md` table registers every doc home, and `.codestable/` holds only temporary cursors.
+Skills never read sibling skill files; worktree, branch, and agent backend policy stay host- or owner-controlled.
 
 ## v1 Upgrade Boundary
 
@@ -288,11 +288,11 @@ source paths. Other skills retrieve only historical sources explicitly named by 
 for example, `cs-keep` reads `compound/` for deduplication. No skill may generate into, rewrite in place,
 or bulk-migrate these v1 sources.
 
-An existing `.codestable/requirements/` may be maintained only when `.codestable/attention.md` explicitly
+An existing `.codestable/requirements/` may be maintained only when `## 项目事实` explicitly
 records it as the canonical requirement location. When the owner first selects it, record that project fact
-in attention before maintenance. Without that explicit record it remains read-only historical knowledge,
+there before maintenance. Without that explicit record it remains read-only historical knowledge,
 and v2 does not create the directory by default. New projects keep requirements in their own documentation
-structure; when no canonical home exists, ask the owner to choose one and record it in attention. Until then,
+structure; when no canonical home exists, ask the owner to choose one and record it in `docs/README.md`. Until then,
 keep stable contracts in the permanent Epic. `reference/`, `tools/`, `gates/`, `hooks/`, and
 `runtime-manifest.json` remain only for legacy compatibility; v2 does not execute the old runtime.
 

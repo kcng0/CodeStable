@@ -32,8 +32,8 @@ CodeStable v2 是 8 个独立安装的 thin-harness skill，加一个项目记�
   `cs-issue` 或 `cs-epic`，不再询问“是否继续”；讨论过程本身不产生授权，handoff 不扩大授权，
   也不替代 owning skill 的 review、验证或 owner gate。
 - 原始问答、未决讨论和候选分支不落盘。稳定术语进入项目已有 canonical 术语归宿，结构性取舍仅在
-  难逆转、缺少上下文会令人意外且存在真实取舍时进入 ADR；任务契约、永久 Epic、attention 与
-  lessons 由 owning skill 按既有规则毕业。没有 canonical 归宿时请 owner 选择，不新建平行真相。
+  难逆转、缺少上下文会令人意外且存在真实取舍时进入 ADR；任务契约、永久 Epic、`## 项目事实` 与
+  `docs/notes/` 由 owning skill 按既有规则毕业。没有 canonical 归宿时请 owner 选择，不新建平行真相。
 - 三个已确认出口之外的结果按 `cs` 既有 Execute / Advise 规则同轮直转或推荐，不获得 handoff 的
   不重复确认特权。只授权讨论时，`cs` 返回已确认结论并推荐由 `cs-keep` 或 owning skill 完成毕业。
 
@@ -108,7 +108,7 @@ CodeStable v2 是 8 个独立安装的 thin-harness skill，加一个项目记�
 - 同一审查阶段累计最多 3 个有终态报告的轮次，更换 reviewer 不重置计数。只有原 run/session 失败或不可恢复、能力不满足、目标、范围、设计或核心路径发生重大变化、reviewer 声明无法继续独立判断，或 owner 要求第二意见时才更换 reviewer；更换时重新创建 fresh reviewer。完成所选保障后，实际触发 review 时才要求通过审查门槛，并且只有已有 commit 授权时才形成语义原子里程碑；WIP/checkpoint 只作恢复或隔离基线，不代表通过。
 - `continuous` 与 `per-item` 策略下，Epic 同一时间只允许一个 `current_item`；这是串行约束，不是每个子项的人工 gate。连续策略下，普通子项达到语义原子里程碑后自动进入下一项，不得询问“是否继续下一项”或终态返回；逐项暂停必须是 owner 明示策略或真实门槛。`parallel` 策略下，主流程是唯一编排者与游标 writer，并行推进依赖互不阻塞的子项并串行集成里程碑。
 - 健康运行中的 reviewer 与原 run/target 绑定；running，或 Awaiting 携带同一可查询 run identity 且仍为活动态时继续等待，不因后来发现更优创建方式而取消、重复创建或并行补发。只有终止无报告、run identity 不可恢复、能力不满足或目标失效时，本轮才失败且不计审查轮次；外层主流程先诊断再决定有界重试、更换创建方式或上交，不盲目重发。
-- `cs-keep` 把高频事实压进 attention，把尚未被更强 owner 承接的经验暂存为 lesson，并推动它们
+- `cs-keep` 把高频事实压进 `AGENTS.md` 的 `## 项目事实`，把尚未被更强 owner 承接的经验暂存为 lesson，并推动它们
   毕业到机械 guard、项目文档或 ADR。
 
 普通任务不生成阶段文档。diff、测试输出和交付说明就是证据；只有跨会话、多人交接或用户
@@ -155,7 +155,7 @@ Epic 把长期产品意图与短期执行状态分成两层，并且只保留一
   owning skill 处理局部设计与保障。
 
 - **永久 Epic 文档**优先沿用项目既有 Epic、RFC 或 initiative 归宿；没有明确归宿时，首次
-  创建才按需建立 `.codestable/epics/{slug}.md`，`cs-onboard` 不预建 `.codestable/epics/`。
+  创建才按需建立 `docs/epics/{slug}.md`，`cs-onboard` 不预建 `docs/epics/`。
   它唯一拥有起点、目标、范围、非目标、验收标准、带稳定 ID/依赖/验收要点的已批准子项、
   关键决策、最终交付索引、整体验收、遗留风险和长期 `status`。
 - **临时执行游标** `.codestable/work/epic-{slug}.md` 只保存永久文档指针、
@@ -207,10 +207,13 @@ owner 接受后，先补齐永久 Epic 的最终范围、关键决策、交付�
 `/cs-onboard` 为新项目创建最小骨架：
 
 ```text
+AGENTS.md          # ## 项目事实：每次会话必读，最多 25 条
+CLAUDE.md          # 只有一行 @AGENTS.md
+docs/
+├── README.md      # 文档契约：各类文档的位置与更新约定
+└── notes/         # 待验证经验，首次写入时创建
 .codestable/
-├── attention.md    # 每次会话需要的少量项目事实，最多 25 条
-├── lessons/        # 一条经验一个 Markdown 文件，按关键词检索
-└── work/           # 活动中的跨会话任务，文件名带类型前缀 feat-/issue-/refactor-/epic-，完成即清
+└── work/          # 活动中的跨会话任务游标，完成即清
 ```
 
 skill 专属 context 与 helper 分别由 owning skill 的 `references/` 和 `scripts/` 提供。项目
@@ -218,10 +221,11 @@ skill 专属 context 与 helper 分别由 owning skill 的 `references/` 和 `sc
 skill 文件，也不依赖集中式 onboard runtime；worktree、branch 和 agent backend 策略由宿主
 或 owner 决定。
 
-团队文档层不属于基础骨架。项目还没有 `docs/README.md` 时，`cs-onboard` 经 owner 同意后按模板写入
-文档契约，并在 `attention.md` 的 `## 文档归宿` 登记 owner 确认的 Vision、当前真相 spec、ADR、永久 Epic
-与术语位置；目录在第一次写入时创建。`cs-keep` 按登记写入，只写仍成立的结论，冲突按 owner 最新确认 >
-当前代码与测试证据 > 可能过期的文档处理。
+团队要读的内容都在 `AGENTS.md` 与 `docs/`，`.codestable/` 只放临时游标。`docs/README.md` 的表格就是
+Vision、当前真相 spec、ADR、永久 Epic 与术语的位置登记；`docs/` 已有内容时，`cs-onboard` 先把路径映射到
+既有位置并经 owner 确认。`cs-keep` 按登记写入，只写仍成立的结论，冲突按 owner 最新确认 > 当前代码与
+测试证据 > 可能过期的文档处理。旧版 `.codestable/attention.md` 与 `lessons/` 经 owner 同意后迁入
+`## 项目事实` 与 `docs/notes/`。
 
 ## v1 升级边界
 
@@ -232,10 +236,10 @@ v2 不迁移或清理 v1 项目的历史目录。`.codestable/roadmap/`、`.code
 全部九目录并引用命中路径；其他 skill 只检索自身契约明确点名的历史源，例如 `cs-keep` 只读
 查重 `compound/`。所有 v1 历史源均不得继续生成、原地改写或批量迁移。
 
-既有 `.codestable/requirements/` 只有在 `.codestable/attention.md` 明确记录其为 canonical
-requirement 位置时才可维护；owner 首次指定时先把该项目事实写入 attention。没有显式记录就
+既有 `.codestable/requirements/` 只有在 `## 项目事实` 明确记录其为 canonical
+requirement 位置时才可维护；owner 首次指定时先把该项目事实写入 `## 项目事实`。没有显式记录就
 按只读历史知识处理，也不默认创建该目录。新项目沿用自身文档结构；没有 canonical 归宿时先请
-owner 选择并记录到 attention，稳定契约在确定前保留于永久 Epic。`reference/`、`tools/`、
+owner 选择并记录到 `docs/README.md`，稳定契约在确定前保留于永久 Epic。`reference/`、`tools/`、
 `gates/`、`hooks/` 与 `runtime-manifest.json` 只作 legacy compatibility，v2 不执行旧 runtime。
 
 v1.0.4 的 32 个 skill 在 v2 收敛为 8 个；其余 24 个入口已退役且不随 v2 安装。完整映射见

@@ -8,7 +8,7 @@ runtime。
 | 分组 | Skill | 责任 |
 |---|---|---|
 | 导航 | `cs` | 明确行动同轮直转；先讨论的请求在当前会话收敛后同轮移交；咨询只推荐；导览不写文件 |
-| 接入 | `cs-onboard` | 创建最小项目记忆骨架；owner 同意后建立团队文档层；无损说明 v1 升级边界；只能由用户调用 |
+| 接入 | `cs-onboard` | 建立 `## 项目事实`、`docs/README.md` 文档契约与最小骨架；无损说明升级边界；只能由用户调用 |
 | 功能 | `cs-feat` | 实现新功能；按风险决定是否先确认设计或做独立 review |
 | 问题 | `cs-issue` | 诊断问题；获授权后用红到绿证据修复 |
 | 重构 | `cs-refactor` | 在可核验的行为等价约束下调整结构或性能 |
@@ -35,7 +35,7 @@ task skill 静默识别强信号，普通任务最多展示一条晶化候选，
 
 ## 项目知识与 Epic 边界
 
-新项目仍只预建 `.codestable/attention.md`、`lessons/` 与 `work/`。Epic 优先沿用项目已有归宿，否则首次需要时才创建 `.codestable/epics/`：永久文档保存目标、范围、已批准子项、决策、交付索引与终态验收，`work/epic-{slug}.md` 只作批准 revision、执行进度与 `item_progression` / `milestone_commit` / `remote_publish` 策略的临时游标，终态删除游标但保留永久档案。
+新项目只建 `AGENTS.md` 的 `## 项目事实`、`docs/README.md` 与 `.codestable/work/`，经验首次写入时进 `docs/notes/`。Epic 优先沿用项目已有归宿，否则首次需要时才创建 `docs/epics/`：永久文档保存目标、范围、已批准子项、决策、交付索引与终态验收，`work/epic-{slug}.md` 只作批准 revision、执行进度与 `item_progression` / `milestone_commit` / `remote_publish` 策略的临时游标，终态删除游标但保留永久档案。
 
 路线尚不清晰时，永久 Epic 文档本身就是路线地图：决策依赖派生 frontier，agent 解决事实，产品判断
 与真实取舍进入 HITL。路线清晰、可审查、可执行后才送审和执行，不增加独立 map、issue 或平行生命周期。
@@ -44,7 +44,7 @@ Epic 保留三道 owner gate：独立 design review 后确认拆解；目标、�
 
 v1 的 `roadmap/`、`features/`、`issues/`、`refactors/`、`goals/`、`compound/`、`audits/`、`brainstorms/` 与 `feedback/` 九个历史知识目录只按任务关键词只读检索和引用，不生成、不原地改写、不批量迁移，也不写回。
 
-既有 `.codestable/requirements/` 只有经 `.codestable/attention.md` 显式登记为 canonical requirement 位置才可维护，否则只读；新项目不默认创建该目录。`cs-epic` 承接有价值的 goal 契约、恢复游标与验收，但不恢复 `cs-goal` runtime、goal package、`state.yaml`、逐轮 iteration 报告或 runtime gate。
+既有 `.codestable/requirements/` 只有经 `## 项目事实` 显式登记为 canonical requirement 位置才可维护，否则只读；新项目不默认创建该目录。`cs-epic` 承接有价值的 goal 契约、恢复游标与验收，但不恢复 `cs-goal` runtime、goal package、`state.yaml`、逐轮 iteration 报告或 runtime gate。
 
 ## v1.0.4 退役入口
 

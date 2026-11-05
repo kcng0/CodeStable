@@ -1,6 +1,6 @@
 ---
 adr: "009"
-title: "ThinkThinkSyn fork：owner 同意后的团队文档层与收敛的学习契约"
+title: "ThinkThinkSyn fork：团队知识迁出 .codestable 与收敛的学习契约"
 status: Accepted
 date: 2026-11-05
 applies-to:
@@ -17,7 +17,7 @@ stage: [onboard, deliver, keep]
 lint: "python3 -m pytest tests/test_skill_contracts.py tests/test_v2_documentation_contract.py"
 ---
 
-# ADR-009: ThinkThinkSyn fork：owner 同意后的团队文档层与收敛的学习契约
+# ADR-009: ThinkThinkSyn fork：团队知识迁出 .codestable 与收敛的学习契约
 
 ## Context
 
@@ -26,22 +26,28 @@ lint: "python3 -m pytest tests/test_skill_contracts.py tests/test_v2_documentati
 
 上游 v2 流程薄、普通任务零产物，但不规定团队文档结构；CodeStable-Lite 的知识分层（Vision / 当前真相
 spec / ADR / 术语）和「只回写仍成立结论」更适合团队，但流程偏重（强制 `ff`、递增编号、`o|x` 命名、
-开工全量扫描）。四个 task skill 还各自复制了同一套强信号与 lesson 窄维护细则。
+开工全量扫描）。上游把高频事实放在 `.codestable/attention.md`，只有调用 cs skill 时才会被读，普通会话与
+不用 cs 的成员看不到。四个 task skill 还各自复制了同一套强信号与 lesson 窄维护细则。
 
 ## Decision
 
 ### 两层分离
 
-- **文档层**属于目标项目、由团队拥有：`docs/README.md` 文档契约规定 Vision、spec、ADR、永久 Epic、术语
-  各回答什么、何时更新、谁确认，以及 PR 内 `Spec impact: none | updated | drift`。模板在
-  `cs-onboard/references/docs-contract.md`。
-- **流程层**是本 fork 的 skill，可替换。skill 不硬编码 `docs/` 路径，只按 `attention.md` 的
-  `## 文档归宿` 登记写入；未登记时沿用上游「请 owner 选择」的行为。
+- **文档层**属于目标项目、由团队拥有，团队要读的内容全部放在宿主会加载或人会打开的位置：
+  - `AGENTS.md` 的 `## 项目事实`（≤25 条，替代上游 `.codestable/attention.md`）；`CLAUDE.md` 只有一行
+    `@AGENTS.md`，让不自动读 `AGENTS.md` 的宿主也随会话加载。
+  - `docs/README.md` 文档契约：表格规定 Vision、spec、ADR、永久 Epic、术语、经验的位置、更新时机与确认者，
+    也是唯一的位置登记；PR 写 `Spec impact: none | updated | drift`。模板在 `cs-onboard/references/docs-contract.md`。
+  - 经验进 `docs/notes/`（替代 `.codestable/lessons/`，生命周期不变）；永久 Epic 默认 `docs/epics/`。
+  - `.codestable/` 只留 `work/` 临时游标。
+- **流程层**是本 fork 的 skill，可替换。skill 按 `docs/README.md` 的登记写入；没有契约时沿用项目既有
+  位置，仍不存在则请 owner 选择。
 
 ### 接入与调用
 
-- 团队文档层不进基础骨架。`cs-onboard` 先问 owner；同意后在缺少 `docs/README.md` 时写入模板、登记
-  文档归宿，目录在第一次写入时创建，已有文档不覆盖。
+- `cs-onboard` 创建上述骨架：`AGENTS.md` 已存在时只追加 `## 项目事实` 段；`docs/` 已有内容时先把契约路径
+  映射到既有位置并经 owner 确认；目录在第一次写入时创建，已有文档契约不覆盖。旧版
+  `.codestable/attention.md` / `lessons/` 经 owner 同意后迁移，否则保留为只读历史。
 - `cs-onboard` 与纯转发的 `cs-code-review` 设 `disable-model-invocation: true`，只由用户调用；`cs` 路由
   到接入时提示运行 `/cs-onboard`。
 
@@ -65,9 +71,9 @@ spec / ADR / 术语）和「只回写仍成立结论」更适合团队，但流�
   分支上结构性冲突，上下文成本随历史线性增长。只吸收其知识模型与冲突规则。
 - **OpenSpec**：CLI 状态机与 delta spec 适合变更提案，但没有 Vision、决策与经验的位置，spec 漂移是其
   主要批评点；要补齐需另建文档层，等于双重维护。
-- **把 attention / lessons 迁到 `AGENTS.md` 与 `docs/notes/`**（原计划）：会改动上游大量锚点与测试，
-  并让 `AGENTS.md` 承载项目事实，违反仓库「`AGENTS.md` 只写行为规则」的边界。改为保留 `.codestable/`
-  路径，团队文档靠 `## 文档归宿` 间接定位。
+- **保留 `.codestable/attention.md` / `lessons/`，用 attention 内的 `## 文档归宿` 间接登记团队文档**（本 ADR
+  初稿）：与上游差异最小，但高频事实只在调用 skill 时被读，团队知识分散在隐藏目录与 `docs/` 两处。
+- **位置登记放在 `AGENTS.md`**：与 `docs/README.md` 的表格重复，一个事实两个 owner。
 - **删除与用户全局规则重复的授权条款**（原计划）：skill 要在没有该全局规则的协作者机器上同样成立，
   重复是独立安装单元的必要代价。
 - **项目 ADR 用递增编号**：并行分支撞号。模板改用 `YYYY-MM-DD-{slug}` 或语义 slug；本仓库自身 ADR
@@ -75,7 +81,9 @@ spec / ADR / 术语）和「只回写仍成立结论」更适合团队，但流�
 
 ## Consequences
 
-- 与上游的差异集中在上述 skill 段落、一个 reference 模板和对应测试锚点，可按主题 cherry-pick 上游更新。
+- 与上游的差异集中在 skill 中的知识路径、上述段落、一个 reference 模板和对应测试锚点；上游涉及
+  attention / lessons 路径的更新需要手工合并。
+- `AGENTS.md` 同时承载行为规则与 `## 项目事实`，两者合计需遵守项目对该文件的长度约束。
 - 团队文档层可被不使用 CodeStable 的成员按 `docs/README.md` 独立维护。
 - 学习契约只有 `cs-keep` 一个 owner；task skill 需要细则时加载 `cs-keep`，多一次按需加载。
 - 静态测试只证明契约文本存在；真实模型是否按登记写入、是否附 `Spec impact`，由试点项目的真路径会话验证。
