@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- ThinkThinkSyn fork (ADR-009): team knowledge moves out of `.codestable/`. Session facts live in the
+- kcng0 fork (ADR-009): team knowledge moves out of `.codestable/`. Session facts live in the
   `## 项目事实` section of `AGENTS.md` (`CLAUDE.md` is a single `@AGENTS.md` line), lessons in `docs/notes/`,
   permanent Epics default to `docs/epics/`, and `docs/README.md` is the doc contract and home registry.
   `.codestable/` keeps only `work/`. `cs-keep` adds current-truth, conflict-priority, Vision, and ADR

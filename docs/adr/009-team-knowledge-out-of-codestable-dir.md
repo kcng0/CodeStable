@@ -1,6 +1,6 @@
 ---
 adr: "009"
-title: "ThinkThinkSyn fork：团队知识迁出 .codestable 与收敛的学习契约"
+title: "kcng0 fork：团队知识迁出 .codestable 与收敛的学习契约"
 status: Accepted
 date: 2026-11-05
 applies-to:
@@ -17,7 +17,7 @@ stage: [onboard, deliver, keep]
 lint: "python3 -m pytest tests/test_skill_contracts.py tests/test_v2_documentation_contract.py"
 ---
 
-# ADR-009: ThinkThinkSyn fork：团队知识迁出 .codestable 与收敛的学习契约
+# ADR-009: kcng0 fork：团队知识迁出 .codestable 与收敛的学习契约
 
 ## Context
 

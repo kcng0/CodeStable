@@ -9,7 +9,7 @@
 <p><img src="https://img.shields.io/badge/status-beta-F59E0B?style=flat-square" alt="Status"/> <img src="https://img.shields.io/badge/cs--skills-8-6366F1?style=flat-square" alt="CodeStable Skills"/> <img src="https://img.shields.io/badge/license-MIT-10B981?style=flat-square" alt="License"/></p>
 </div>
 
-> **ThinkThinkSyn fork**：基于上游 [codestable/CodeStable](https://github.com/codestable/CodeStable) `19c796de`，版权归上游作者。差异与理由见 [ADR-009](docs/adr/009-thinkthinksyn-team-doc-layer-fork.md)。
+> **kcng0 fork**：基于上游 [codestable/CodeStable](https://github.com/codestable/CodeStable) `19c796de`，版权归上游作者。差异与理由见 [ADR-009](docs/adr/009-team-knowledge-out-of-codestable-dir.md)。
 
 CodeStable 是一组面向严肃软件开发的轻量 skill 契约：不编排 Agent 团队，也不为项目建立第二套文档系统。模型在明确边界内行动，用证据证明结果，并把知识放回项目已有归宿。
 

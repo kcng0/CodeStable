@@ -9,7 +9,7 @@
 <p><img src="https://img.shields.io/badge/status-beta-F59E0B?style=flat-square" alt="Status"/> <img src="https://img.shields.io/badge/cs--skills-8-6366F1?style=flat-square" alt="CodeStable Skills"/> <img src="https://img.shields.io/badge/license-MIT-10B981?style=flat-square" alt="License"/></p>
 </div>
 
-> **ThinkThinkSyn fork** of upstream [codestable/CodeStable](https://github.com/codestable/CodeStable) `19c796de`; copyright remains with the upstream authors. See [ADR-009](docs/adr/009-thinkthinksyn-team-doc-layer-fork.md) for the differences.
+> **kcng0 fork** of upstream [codestable/CodeStable](https://github.com/codestable/CodeStable) `19c796de`; copyright remains with the upstream authors. See [ADR-009](docs/adr/009-team-knowledge-out-of-codestable-dir.md) for the differences.
 
 CodeStable offers lightweight skill contracts for serious software. It does not orchestrate agent teams and does not create a second documentation system. Models act within boundaries, prove results, and return knowledge to existing homes.
 
