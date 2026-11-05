@@ -61,10 +61,10 @@ spec / ADR / 术语）和「只回写仍成立结论」更适合团队，但流�
 - `cs-feat` / `cs-issue` 走真实入口验证时优先用项目内 verification skill 或 `## 项目事实` 记录的驱动方式；
   没有时建议用 `create-verification-skill` 生成。
 - feat / issue 改变外部可观察行为时在同一 diff 更新 spec，还没有覆盖该行为的 spec 时只为改动的行为新建一篇（试点
-  中「无 spec 写 none」与「把 verify 说明当 spec」两种口径不一致后收紧）；收尾附 `Spec impact`。
-- 三个 task skill 把满足 ADR 三条门槛的取舍在 owner 确认中标为 ADR，选定后在同一 diff 写入（试点中迁移
-  存储的决定未被提出 ADR 后补）；refactor 只在发现文档漂移时附 `drift`；`cs-epic`
+  中「无 spec 写 none」与「把 verify 说明当 spec」两种口径不一致后收紧）；收尾附 `Spec impact`；refactor 只在发现文档漂移时附 `drift`；`cs-epic`
   收尾在登记了 Vision 时只提出 Vision 候选。
+- 三个 task skill 把满足 ADR 三条门槛的取舍在 owner 确认中标为 ADR，选定后在同一 diff 写入（试点中迁移
+  存储的决定未被提出 ADR 后补）。
 
 ### 独立验收取代审查协议
 
