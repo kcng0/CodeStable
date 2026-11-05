@@ -290,8 +290,8 @@ def test_cs_discusses_in_session_then_hands_off_same_turn() -> None:
         "canonical 术语归宿",
         "难逆转、缺少上下文会令人意外且源于真实取舍",
         "永久 Epic 文档",
-        "`attention.md`",
-        "`lessons/`",
+        "`## 项目事实`",
+        "`docs/notes/`",
     ):
         assert anchor in cs
 
@@ -503,7 +503,7 @@ def test_keep_never_writes_v1_compound() -> None:
     _, keep = _read_skill(SKILLS / "cs-keep/SKILL.md")
     assert "`.codestable/compound/` 是只读历史知识源" in keep
     assert "有增量时" in keep
-    assert "`.codestable/lessons/`" in keep
+    assert "`docs/notes/`" in keep
     assert "能合并就更新旧文件" not in keep
 
 
@@ -517,7 +517,7 @@ def test_keep_owns_the_three_state_lesson_lifecycle() -> None:
         "scope: 模块 / 命令 / 场景关键词",
         "适用 / 不适用：边界与停止应用信号",
         "证据：最多三个代表性路径、测试、diff 或任务指针",
-        "候选归宿：test | checker | attention | project-doc | adr | codestable-eval",
+        "候选归宿：test | checker | project-facts | project-doc | adr | codestable-eval",
         "`observed`",
         "尚未在独立后续任务验证",
         "`validated`",
@@ -541,8 +541,8 @@ def test_keep_promotes_or_retires_without_creating_parallel_truth() -> None:
     for anchor in (
         "机械 guard 优先",
         "测试、checker、lint、类型或 deterministic helper",
-        "高频必读事实进入 `attention.md`",
-        "全文保持 ≤25 条",
+        "高频必读事实进入 `AGENTS.md` 的 `## 项目事实`",
+        "该段保持 ≤25 条",
         "难回退、缺少上下文会令人意外、源于真实取舍",
         "其他稳定方法进入项目既有文档",
         "目标不存在时请 owner 选择",
@@ -569,22 +569,23 @@ def test_onboard_keeps_the_base_skeleton_minimal() -> None:
     skeleton = onboard.split("```text", 1)[1].split("```", 1)[0]
     assert "epics/" not in skeleton
     assert "requirements/" not in skeleton
-    assert "首次 Epic" in onboard
-    assert "`.codestable/epics/` 不属于基础骨架" in onboard
-    assert "按需创建" in onboard
+    assert "首次写入时\n  由 owning skill 创建，不预建空目录" in onboard
     for path in LEGACY_KNOWLEDGE_DIRS:
         assert f"`{path}`" in onboard
 
 
-def test_team_doc_layer_is_owner_gated_and_registered_in_attention() -> None:
+def test_team_knowledge_lives_in_agents_md_and_docs_not_codestable() -> None:
     frontmatter, onboard = _read_skill(SKILLS / "cs-onboard/SKILL.md")
     assert frontmatter.get("disable-model-invocation") is True
     assert (SKILLS / "cs-onboard/references/docs-contract.md").is_file()
     assert "`references/docs-contract.md`" in onboard
-    assert "## 文档归宿" in onboard
-    # 团队文档层不进基础骨架，只在 owner 同意后按需写入。
     skeleton = onboard.split("```text", 1)[1].split("```", 1)[0]
-    assert "docs/" not in skeleton
+    for anchor in ("## 项目事实", "CLAUDE.md", "@AGENTS.md", "README.md", "notes/", "work/"):
+        assert anchor in skeleton, anchor
+    # `.codestable/` 只留临时游标。
+    codestable_part = skeleton[skeleton.index(".codestable/"):]
+    assert "attention" not in codestable_part and "lessons" not in codestable_part
+    assert "只含一行 `@AGENTS.md`" in onboard
 
     for skill_name in ("cs-feat", "cs-issue", "cs-refactor"):
         _, body = _read_skill(SKILLS / skill_name / "SKILL.md")
@@ -595,7 +596,7 @@ def test_team_doc_layer_is_owner_gated_and_registered_in_attention() -> None:
 def test_requirements_only_follow_an_explicit_canonical_owner() -> None:
     for skill_name in ("cs-feat", "cs-epic"):
         _, body = _read_skill(SKILLS / skill_name / "SKILL.md")
-        assert "`.codestable/attention.md` 明确记录" in body, skill_name
+        assert "`## 项目事实` 明确记录" in body, skill_name
         assert "canonical requirement" in body, skill_name
         assert "不存在时不新建 `.codestable/requirements/`" in body, skill_name
 
@@ -871,6 +872,9 @@ def test_shipped_skills_do_not_bind_review_backend_products() -> None:
     assert product_named_paths == allowed_product_named_paths
     for path in paths:
         text = path.read_text(encoding="utf-8").lower()
+        if path.relative_to(SKILLS) == Path("cs-onboard/SKILL.md"):
+            # onboard 生成项目的 `CLAUDE.md`（只含 `@AGENTS.md`）；文件名不是 backend 绑定。
+            text = text.replace("`claude.md`", "").replace("claude.md ", "")
         for product_name in forbidden:
             assert product_name not in text, f"{path}: bound to {product_name!r}"
 
@@ -1012,7 +1016,7 @@ def test_epic_wayfinding_publishes_route_map_frontier_and_hitl_contract() -> Non
         "批准后再把 `current_item` 设为第一个依赖已满足的子项",
         "起草 proposed 永久 Epic 文档时，同时创建或复用对应 work 游标",
         "先在项目已有明确的 Epic、RFC 或 initiative 归宿中按任务关键词扫描 `status: proposed` 的在途 Epic",
-        "存在 `.codestable/epics/` 时也按相同条件扫描其中候选",
+        "存在 `docs/epics/` 或旧版 `.codestable/epics/` 时也按相同条件扫描其中候选",
         "两类归宿并存时都纳入候选，项目已有归宿优先",
         "仍不能唯一确定时列出候选并请 owner 选择",
         "不自动合并、补游标或新建 Epic",
@@ -1073,8 +1077,8 @@ def test_epic_wayfinding_publishes_route_map_frontier_and_hitl_contract() -> Non
 
 def test_epic_separates_durable_record_from_execution_cursor() -> None:
     _, epic = _read_skill(SKILLS / "cs-epic/SKILL.md")
-    assert "项目已有明确 Epic、RFC 或 initiative 归宿时沿用" in epic
-    assert "`.codestable/epics/{slug}.md`" in epic
+    assert "项目已有明确 Epic、RFC 或 initiative 归宿（以 `docs/README.md` 文档契约为准）时沿用" in epic
+    assert "`docs/epics/{slug}.md`" in epic
     assert "永久 Epic 文档" in epic
     assert "`.codestable/work/epic-{slug}.md`" in epic
     assert "执行游标" in epic

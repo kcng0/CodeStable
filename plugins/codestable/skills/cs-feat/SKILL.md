@@ -10,9 +10,9 @@ argument-hint: "[功能描述]"
 
 ## 开工
 
-- 有 `.codestable/attention.md` 就先读。
-- 按功能关键词检索 `.codestable/lessons/`、项目文档，以及存在的 v1 只读知识目录：`.codestable/roadmap/`、`.codestable/features/`、`.codestable/issues/`、`.codestable/refactors/`、`.codestable/goals/`、`.codestable/compound/`、`.codestable/audits/`、`.codestable/brainstorms/`、`.codestable/feedback/`；命中要报告来源路径。上述 v1 目录不得继续生成、原地改写或批量迁移，新结论按归属进入 v2 Epic、项目文档、ADR 或 lesson。
-- 既有 `.codestable/requirements/` 只有在 `.codestable/attention.md` 明确记录其为 canonical requirement 位置时才可维护；owner 在当前任务首次指定时，先把该项目事实写入 attention。没有显式记录时只读检索，不存在时不新建 `.codestable/requirements/`。
+- 先读 `AGENTS.md` 的 `## 项目事实`（已随会话加载则不重复读）。
+- 按功能关键词检索 `docs/notes/`、项目文档，以及存在的 v1 只读知识目录：`.codestable/roadmap/`、`.codestable/features/`、`.codestable/issues/`、`.codestable/refactors/`、`.codestable/goals/`、`.codestable/compound/`、`.codestable/audits/`、`.codestable/brainstorms/`、`.codestable/feedback/`；命中要报告来源路径。上述 v1 目录不得继续生成、原地改写或批量迁移，新结论按归属进入 v2 Epic、项目文档、ADR 或 lesson。
+- 既有 `.codestable/requirements/` 只有在 `## 项目事实` 明确记录其为 canonical requirement 位置时才可维护；owner 在当前任务首次指定时，先把该项目事实写入 `## 项目事实`。没有显式记录时只读检索，不存在时不新建 `.codestable/requirements/`。
 - 同一会话由 `cs` 交入且带已确认 handoff 时，直接消费目标入口、原始诉求、目标或期望行为、范围/非目标、验收、已核实仓库事实及来源、owner 已确认的术语与决策、未决风险、canonical 资产指针或资产候选；packet 精确范围内已确认的事项不重复询问。handoff 只证明当前会话共识，不扩大实现、commit、发布或写入授权，也不替代本 skill 的 review、验证与确认门槛；字段缺失、仓库事实冲突、出现会改变结果的新风险、缺少会改变方向的事实或超出已确认边界时再按本 skill 规则确认。
 - 写代码前先看相邻实现，写得像这个项目原本的代码。
 - 动手前先定归属：这能力属于哪里、沿用现有词汇叫什么——不丢进最近的文件、不起新同义词。结构与取舍拿不准时读 `references/code-design.md` 与 `references/economy.md`（最小充分 ≠ 最小 diff；有界简化必须记上限、触发与方向）。
@@ -93,7 +93,7 @@ design 被触发时，最低内容写清改什么、契约变化或不变、真�
 - 真实取舍或风险需要 owner 选择时**不得代替用户确认设计**，不 auto-approve，不因对话历史推断同意。
 - 项目已有测试设施时优先测试先行：先写能表达验收行为的失败测试再实现；确实无法自动化时与用户确认验证方式。
 - 声称完成前必须给出**与声明相称的可核验证据**：目标行为的观察结果、测试输出；只说"应该可以"不算完成。
-- 需要走真实入口验证时，优先用项目内已有的 verification skill（如 `verify`）或 `attention.md` 记录的驱动方式；都没有时按项目现有方式验证，并在报告中建议用 `create-verification-skill` 生成。
+- 需要走真实入口验证时，优先用项目内已有的 verification skill（如 `verify`）或 `## 项目事实` 记录的驱动方式；都没有时按项目现有方式验证，并在报告中建议用 `create-verification-skill` 生成。
 
 ## 审查协议
 

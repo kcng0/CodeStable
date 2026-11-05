@@ -213,8 +213,9 @@ def test_readme_is_a_compact_first_evaluator_entry() -> None:
             "npx skills@latest add codestable/CodeStable/plugins/codestable",
             "/cs-onboard",
             "/cs",
-            "attention.md",
-            "lessons/",
+            "## 项目事实",
+            "@AGENTS.md",
+            "docs/notes/",
             "work/",
         ):
             assert anchor in text
@@ -639,8 +640,8 @@ def test_workflow_owns_epic_and_legacy_knowledge_contracts() -> None:
         "批量迁移",
         "永久 Epic 文档",
         "临时执行游标",
-        "按需建立 `.codestable/epics/{slug}.md`",
-        "`cs-onboard` 不预建 `.codestable/epics/`",
+        "按需建立 `docs/epics/{slug}.md`",
+        "`cs-onboard` 不预建 `docs/epics/`",
         "Epic 保留三道 owner gate",
         "最新 owner 已批准的验收标准",
         "owner 最终接受",
@@ -666,8 +667,8 @@ def test_workflow_owns_epic_and_legacy_knowledge_contracts() -> None:
         "bulk-migrate",
         "permanent Epic document",
         "temporary execution cursor",
-        "create `.codestable/epics/{slug}.md` on demand",
-        "`cs-onboard` does not precreate `.codestable/epics/`",
+        "create `docs/epics/{slug}.md` on demand",
+        "`cs-onboard` does not precreate `docs/epics/`",
         "An Epic retains three owner gates",
         "latest owner-approved criteria",
         "owner's final acceptance",
@@ -686,7 +687,7 @@ def test_workflow_owns_epic_and_legacy_knowledge_contracts() -> None:
 
     for workflow in (zh_workflow, en_workflow):
         assert ".codestable/requirements/" in workflow
-        assert ".codestable/attention.md" in workflow
+        assert "## 项目事实" in workflow
         assert "canonical requirement" in workflow
 
     zh_readme = _read("README.md")

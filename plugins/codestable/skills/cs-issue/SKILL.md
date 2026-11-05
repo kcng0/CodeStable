@@ -10,8 +10,8 @@ argument-hint: "[问题描述]"
 
 ## 开工
 
-- 有 `.codestable/attention.md` 就先读。
-- 按错误信息与相关模块关键词检索 `.codestable/lessons/`、项目文档，以及存在的 v1 只读知识目录：`.codestable/roadmap/`、`.codestable/features/`、`.codestable/issues/`、`.codestable/refactors/`、`.codestable/goals/`、`.codestable/compound/`、`.codestable/audits/`、`.codestable/brainstorms/`、`.codestable/feedback/`；这个坑可能踩过，命中要报告来源路径。上述 v1 目录不得继续生成、原地改写或批量迁移，新结论按归属进入 v2 Epic、项目文档、ADR 或 lesson。
+- 先读 `AGENTS.md` 的 `## 项目事实`（已随会话加载则不重复读）。
+- 按错误信息与相关模块关键词检索 `docs/notes/`、项目文档，以及存在的 v1 只读知识目录：`.codestable/roadmap/`、`.codestable/features/`、`.codestable/issues/`、`.codestable/refactors/`、`.codestable/goals/`、`.codestable/compound/`、`.codestable/audits/`、`.codestable/brainstorms/`、`.codestable/feedback/`；这个坑可能踩过，命中要报告来源路径。上述 v1 目录不得继续生成、原地改写或批量迁移，新结论按归属进入 v2 Epic、项目文档、ADR 或 lesson。
 - 同一会话由 `cs` 交入且带已确认 handoff 时，直接消费目标入口、原始诉求、目标或期望行为、范围/非目标、验收、已核实仓库事实及来源、owner 已确认的术语与决策、未决风险、canonical 资产指针或资产候选；packet 精确范围内已确认的事项不重复询问。handoff 只证明当前会话共识，不扩大实现、commit、发布或写入授权，也不替代本 skill 的 review、验证与确认门槛；字段缺失、仓库事实冲突、出现会改变结果的新风险、缺少会改变方向的事实或超出已确认边界时再按本 skill 规则确认。
 - 对照检查：目标（期望行为）、现场（复现条件与环境）、边界（哪些不能动）、验收（怎么算诊断清楚或修好）。缺少会改变诊断或修复方向的事实时先问用户，一次最多 3 个问题，形成共识即停。
 - 诉求其实是新增能力而不是坏掉的行为时，转 `cs-feat`，不在 issue 里偷做。
@@ -101,7 +101,7 @@ design 被触发时，最低内容写清改什么、契约变化或不变、真�
 - diagnose 下“优先失败测试”指优先运行既有失败或只读检查，不新建测试文件；这里的“不许猜根因”是
   指不得把假设宣称为已证实根因，diagnose 仍可按结论分级交付可证伪假设。
 - 声称修复完成前，**那条变红的验证必须变绿**，并附运行输出；相关既有测试不得变红。
-- 需要走真实入口验证时，优先用项目内已有的 verification skill（如 `verify`）或 `attention.md` 记录的驱动方式；都没有时按项目现有方式验证，并在报告中建议用 `create-verification-skill` 生成。
+- 需要走真实入口验证时，优先用项目内已有的 verification skill（如 `verify`）或 `## 项目事实` 记录的驱动方式；都没有时按项目现有方式验证，并在报告中建议用 `create-verification-skill` 生成。
 - **根因是有效状态第一次变成无效的地方，不是报错处**；只消除因果断点，不在症状处堆特殊分支。
 - 同一修复路径失败两次，停下来重新审视根因假设，不要变着花样重试；升级手段（可证伪假设、一次一个变量）与"怀疑结构"信号见 `references/debug.md`。
 - 修复中发现根因超出已授权 scope（例如必须重构或新增功能）时，先报告影响与最小选项并请 owner

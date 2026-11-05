@@ -1,14 +1,14 @@
 # 文档契约
 
-本文件是 `docs/README.md` 的模板。`cs-onboard` 只在 owner 同意建立团队文档层时原样写入，再按项目实际
-调整路径；不预置业务内容。
+本文件是 `docs/README.md` 的模板。`cs-onboard` 在项目没有文档契约时写入；`docs/` 已有内容时先按项目
+实际位置调整路径并经 owner 确认。不预置业务内容。
 
 ---
 
 # 文档契约
 
 `docs/` 是团队共享的项目知识。人和 agent 按同一套约定读写；agent 工作流只是写入者之一，不使用它的人
-也能照本文维护。
+也能照本文维护。下表就是各类文档的位置登记：路径变化时改这里，agent 按本表写入。
 
 ## 各类文档回答什么
 
@@ -19,8 +19,9 @@
 | `docs/adr/`（入口 `index.md`） | 难逆转的决定及其被否决的方案 | 做出难逆转决定时；只追加或取代 | owner |
 | `docs/epics/{slug}.md` | 一段有边界的大变化：目标、范围、子项、验收 | Epic 生命周期内 | owner |
 | `GLOSSARY.md` | 团队术语、定义与排除含义 | 出现新术语或歧义时 | PR reviewer |
-| `.codestable/attention.md` | 每次会话必读的高频事实（≤25 条） | 事实变化时 | PR reviewer |
-| `.codestable/lessons/` | 尚待验证的经验（staging，可纠偏、可删除） | agent 提出、人确认后 | PR reviewer |
+| `AGENTS.md` 的 `## 项目事实` | 每次会话必读的高频事实（≤25 条） | 事实变化时 | PR reviewer |
+| `docs/notes/` | 尚待验证的经验（staging，可纠偏、可删除） | agent 提出、人确认后 | PR reviewer |
+| `.codestable/work/` | 进行中任务的临时游标，不是文档 | 任务完成即删 | — |
 
 ## 规则
 

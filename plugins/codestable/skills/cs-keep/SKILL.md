@@ -10,7 +10,7 @@ argument-hint: "[要沉淀的内容]"
 
 ## 开工与授权
 
-- 有 `.codestable/attention.md` 就先读；写前检索 `.codestable/lessons/` 与 v1 只读
+- 先读 `AGENTS.md` 的 `## 项目事实`（已随会话加载则不重复读）；写前检索 `docs/notes/` 与 v1 只读
   `.codestable/compound/`，核实证据、scope、重复项与已有 canonical owner。
 - 用户明确要求“记住 / 更新 / 退役”、接受普通 owning task 给出的晶化候选，或在 Epic 最终毕业
   gate 批准候选，就是本次精确内容的写入授权，不追问分类。新建、改写规则/scope、晋升、删除或
@@ -24,13 +24,14 @@ argument-hint: "[要沉淀的内容]"
 1. **机械 guard 优先**：能由测试、checker、lint、类型或 deterministic helper 阻止的重复错误，
    在 owning task 已有实现授权且不扩大 scope 时直接机械化，不另写重复 lesson；否则只建议进入
    对应 owning task，不把记忆写入授权扩成代码修改授权。
-2. **高频必读事实进入 `attention.md`**：全文保持 ≤25 条，保留存量分节；超限先合并再新增。
+2. **高频必读事实进入 `AGENTS.md` 的 `## 项目事实`**：该段保持 ≤25 条，只改本段、不动 `AGENTS.md` 其他
+   内容，保留存量分节；超限先合并再新增。
 3. **结构性决定进入 ADR**：必须同时满足难回退、缺少上下文会令人意外、源于真实取舍；沿用项目
    惯例位置，不用 lesson 复制决定。
-4. **其他稳定方法进入项目既有文档**（含当前真相）；`attention.md` 的 `## 文档归宿` 已登记位置时按登记
-   写入，目标不存在时请 owner 选择，不发明目录。
+4. **其他稳定方法进入项目既有文档**（含当前真相）；位置以 `docs/README.md` 文档契约登记为准，
+   目标不存在时请 owner 选择，不发明目录。
 5. 其余尚未被更强 owner 承接的可复用经验，进入
-   `.codestable/lessons/YYYY-MM-DD-{slug}.md`，作为可纠偏、可删除的 staging。
+   `docs/notes/YYYY-MM-DD-{slug}.md`，作为可纠偏、可删除的 staging。
 
 ## 当前真相与决策
 
@@ -41,7 +42,7 @@ argument-hint: "[要沉淀的内容]"
 - 新建或取代 ADR 时写明被否决的方案；取代时新建条目并把旧条标为 `Superseded`，不改写旧条正文。
   项目有 ADR 或 spec 索引时同一更新内同步索引。
 
-`.codestable/`、`attention.md` 或 `lessons/` 不存在时可按需创建，不要求先跑 cs-onboard。临时状态、
+`## 项目事实` 段或 `docs/notes/` 不存在时可按需创建，不要求先跑 cs-onboard。临时状态、
 本周计划或 git 已完整表达的事实不沉淀。`codestable-eval` 只标记未来上游候选；本轮不导出、不上传、
 不改 skill，也不恢复 `cs-feedback`。
 
@@ -58,7 +59,7 @@ date: YYYY-MM-DD
 规则：未来可执行的结论。
 适用 / 不适用：边界与停止应用信号。
 证据：最多三个代表性路径、测试、diff 或任务指针。
-候选归宿：test | checker | attention | project-doc | adr | codestable-eval
+候选归宿：test | checker | project-facts | project-doc | adr | codestable-eval
 ```
 
 ## 生命周期
@@ -109,7 +110,7 @@ gate，随当次代码、证据和
 
 ## 检索约定
 
-日后找回：`grep -ri "关键词" .codestable/lessons/ .codestable/compound/`。应用前以当前代码、测试或
+日后找回：`grep -ri "关键词" docs/notes/ .codestable/compound/`。应用前以当前代码、测试或
 canonical 文档核实；`retired` 不应用，`compound/` 命中仍按只读规则处理。
 
 ## 完成

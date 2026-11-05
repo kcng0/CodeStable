@@ -28,7 +28,7 @@ argument-hint: "[诉求]"
 - 已有执行授权时同轮移交给三个已确认出口 `cs-feat` / `cs-issue` / `cs-epic`，不再询问“是否继续”；只授权讨论时返回已确认结论，并推荐由 `cs-keep` 或对应 owning skill 完成资产毕业。
 - 讨论过程本身不产生授权；handoff 不扩大实现、commit、发布或写入授权，也不替代目标 skill 的硬门槛。收敛到其他入口时按既有 Execute / Advise 规则处理，不附带 handoff 的不重复确认契约。
 - 不创建 `.codestable/work/discussion-*`、transcript 或新状态；未收敛讨论不跨会话恢复，原始问答、未决讨论和候选分支不落盘。
-- 稳定术语交给项目已有 canonical 术语归宿；难逆转、缺少上下文会令人意外且源于真实取舍的决定才进入 ADR；任务契约、永久 Epic 文档、`attention.md` 与 `lessons/` 由 owning skill 按各自规则毕业。
+- 稳定术语交给项目已有 canonical 术语归宿；难逆转、缺少上下文会令人意外且源于真实取舍的决定才进入 ADR；任务契约、永久 Epic 文档、`## 项目事实` 与 `docs/notes/` 由 owning skill 按各自规则毕业。
 
 ## 入口表
 
@@ -49,9 +49,9 @@ argument-hint: "[诉求]"
 
 ## 体系速读
 
-CodeStable 是一层薄研发纪律加一个项目记忆闭环。项目记忆在 `.codestable/`：attention.md（每次必读）、lessons/（按关键词检索的经验）、work/（活动中的跨会话任务）。普通任务零产物，证据是 diff 与测试。团队文档（Vision、当前真相 spec、ADR、永久 Epic、术语）放在 `attention.md` 的 `## 文档归宿` 登记的位置，读写约定见项目 `docs/README.md`；改变已有行为的交付附 `Spec impact` 一行。
+CodeStable 是一层薄研发纪律加一个项目记忆闭环。项目记忆都在仓库里：`AGENTS.md` 的 `## 项目事实`（每次必读）、`docs/notes/`（按关键词检索的经验）、`.codestable/work/`（活动中的跨会话任务游标）。普通任务零产物，证据是 diff 与测试。团队文档（Vision、当前真相 spec、ADR、永久 Epic、术语）的位置与读写约定以项目 `docs/README.md` 文档契约为准；改变已有行为的交付附 `Spec impact` 一行。
 
-Epic 采用职责互斥的双层文档：永久 Epic 上下文优先沿用项目已有 Epic / RFC / initiative 归宿，否则首次使用时按需创建 `.codestable/epics/`；临时 `.codestable/work/epic-{slug}.md` 只保存执行游标，完成后清理。`cs-goal` 中有价值的目标契约、恢复、人工门槛和终态验收已并入 `cs-epic`，但不恢复 `cs-goal` 入口、goal package、`state.yaml`、逐轮 iteration 报告或 runtime gate。
+Epic 采用职责互斥的双层文档：永久 Epic 上下文优先沿用项目已有 Epic / RFC / initiative 归宿，否则首次使用时按需创建 `docs/epics/`；临时 `.codestable/work/epic-{slug}.md` 只保存执行游标，完成后清理。`cs-goal` 中有价值的目标契约、恢复、人工门槛和终态验收已并入 `cs-epic`，但不恢复 `cs-goal` 入口、goal package、`state.yaml`、逐轮 iteration 报告或 runtime gate。
 
 v1 的 24 个旧入口（cs-feat-design、cs-goal、cs-audit、cs-note、cs-feedback、cs-roadmap 系等）已并入
 上表：设计与需求澄清是按风险或 Epic 契约触发的可用保障，审计是 cs-review 的模式，沉淀统一走

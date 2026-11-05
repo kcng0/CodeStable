@@ -10,13 +10,13 @@ argument-hint: "[大需求描述]"
 
 ## 开工
 
-- 有 `.codestable/attention.md` 就先读。
-- 按任务关键词在存在的 `.codestable/lessons/`、项目文档以及 v1 只读知识目录 `.codestable/roadmap/`、`.codestable/features/`、`.codestable/issues/`、`.codestable/refactors/`、`.codestable/goals/`、`.codestable/compound/`、`.codestable/audits/`、`.codestable/brainstorms/`、`.codestable/feedback/` 中 grep；命中要报告来源路径。上述 v1 目录只读，不得继续生成、原地改写或批量迁移；新结论毕业到永久 Epic、项目文档、ADR 或 lesson。
-- `.codestable/requirements/` 仅在 `.codestable/attention.md` 明确记录为 canonical requirement 位置时才可维护；owner 首次指定时先把该项目事实写入 attention。未记录时只读，不存在时不新建 `.codestable/requirements/`；新项目沿用项目自身文档结构，归宿未定的稳定契约先留在永久 Epic。
+- 先读 `AGENTS.md` 的 `## 项目事实`（已随会话加载则不重复读）。
+- 按任务关键词在存在的 `docs/notes/`、项目文档以及 v1 只读知识目录 `.codestable/roadmap/`、`.codestable/features/`、`.codestable/issues/`、`.codestable/refactors/`、`.codestable/goals/`、`.codestable/compound/`、`.codestable/audits/`、`.codestable/brainstorms/`、`.codestable/feedback/` 中 grep；命中要报告来源路径。上述 v1 目录只读，不得继续生成、原地改写或批量迁移；新结论毕业到永久 Epic、项目文档、ADR 或 lesson。
+- `.codestable/requirements/` 仅在 `## 项目事实` 明确记录为 canonical requirement 位置时才可维护；owner 首次指定时先把该项目事实写入 `## 项目事实`。未记录时只读，不存在时不新建 `.codestable/requirements/`；新项目沿用项目自身文档结构，归宿未定的稳定契约先留在永久 Epic。
 - 有匹配的 `.codestable/work/epic-{slug}.md` 时先恢复：读取其永久 Epic 指针、`phase`、
   `approved_revision`、`item_progression`、`milestone_commit` 与 `remote_publish`，核对 active 永久文档的
   当前 SHA-256。游标未命中时，先在项目已有明确的 Epic、RFC 或 initiative 归宿中按任务关键词扫描
-  `status: proposed` 的在途 Epic；存在 `.codestable/epics/` 时也按相同条件扫描其中候选。两类归宿并存
+  `status: proposed` 的在途 Epic；存在 `docs/epics/` 或旧版 `.codestable/epics/` 时也按相同条件扫描其中候选。两类归宿并存
   时都纳入候选，项目已有归宿优先。唯一命中时只补回缺失的 planning 游标并恢复。命中多个时按 slug、
   任务关键词与永久文档指针消歧；仍不能唯一确定时列出候选并请 owner 选择，不自动合并、补游标或
   新建 Epic。仓库事实优先于聊天历史；hash、策略字段或仓库事实不一致时先修复或请求上下文，不创建
@@ -55,7 +55,7 @@ marker，最终毕业清单一次处理并复用最终 owner gate。
 
 Epic 天然跨会话，但稳定上下文和活动状态不得混写：
 
-- **永久 Epic 文档**：项目已有明确 Epic、RFC 或 initiative 归宿时沿用；否则首次创建时按需建立 `.codestable/epics/{slug}.md`，`cs-onboard` 不预建该目录。永久 Epic 文档就是唯一路线文档，proposed 阶段就是低分辨率文档内路线地图；它是起点、目标、范围、非目标、验收标准、条件式共享语言与概念边界、带稳定 ID/依赖/验收要点的子项契约、关键决策、最终交付索引、整体验收、遗留风险与长期 `status` 的唯一 owner。路线发现期间还暂存带依赖的 `待决策` 与 `尚未明确`，不新增独立 issue、map 或第三套状态。
+- **永久 Epic 文档**：项目已有明确 Epic、RFC 或 initiative 归宿（以 `docs/README.md` 文档契约为准）时沿用；否则首次创建时按需建立 `docs/epics/{slug}.md`，`cs-onboard` 不预建该目录。永久 Epic 文档就是唯一路线文档，proposed 阶段就是低分辨率文档内路线地图；它是起点、目标、范围、非目标、验收标准、条件式共享语言与概念边界、带稳定 ID/依赖/验收要点的子项契约、关键决策、最终交付索引、整体验收、遗留风险与长期 `status` 的唯一 owner。路线发现期间还暂存带依赖的 `待决策` 与 `尚未明确`，不新增独立 issue、map 或第三套状态。
 - **执行游标**：`.codestable/work/epic-{slug}.md` 只保存永久文档指针、`approved_revision`、执行 `phase`、当前子项 ID、各 ID 进度、下一步、`blocked_by`、`item_progression`、`milestone_commit`、`remote_publish`、parallel 策略下的 `active_items` 恢复记录、临时决策及证据/commit 指针；不得复制目标、验收、子项定义或最终结论。
 
 永久文档最小结构：
@@ -142,6 +142,6 @@ owner 确认 proposed 文档与上述策略后，主流程机械置 `active`，�
 
 ## 收尾
 
-- owner 接受后先把最终范围、关键决策、交付索引、整体验收、遗留风险与毕业清单写入永久 Epic，再用终态更新置 `accepted` 并移除 `work` 指针。稳定产品契约进 canonical requirement/项目文档，结构性决策进 ADR，经验进 lessons；目标位置不存在时请 owner 选择，确定前结论留在永久 Epic。`attention.md` 的 `## 文档归宿` 登记了 Vision 时，检查交付是否改变产品方向；有变化只列为 Vision 候选，owner 确认后再写入。
+- owner 接受后先把最终范围、关键决策、交付索引、整体验收、遗留风险与毕业清单写入永久 Epic，再用终态更新置 `accepted` 并移除 `work` 指针。稳定产品契约进 canonical requirement/项目文档，结构性决策进 ADR，经验进 lessons；目标位置不存在时请 owner 选择，确定前结论留在永久 Epic。`docs/README.md` 文档契约登记了 Vision 时，检查交付是否改变产品方向；有变化只列为 Vision 候选，owner 确认后再写入。
 - 终态 `accepted` / `superseded` / `cancelled` 是不可恢复执行的持久信号。无论中断时还剩 work 指针、游标或所属子项 work，都从仓库事实幂等续做：补齐终态记录与毕业清单、移除指针、删除 Epic 游标，再按 frontmatter `epic:` 清理全部子项 work；不得恢复执行或创建重复 Epic，永久 Epic 文档不得删除。
 - 不恢复 `cs-goal` 入口、goal package、`state.yaml`、逐轮 iteration 报告或 legacy runtime gate；目标契约、恢复游标、owner gate 和终态验收都由上述双层文档承担。
